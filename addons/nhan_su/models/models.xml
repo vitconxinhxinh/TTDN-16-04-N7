@@ -1,0 +1,47 @@
+<odoo>
+    <record id="model_nhan_su_employee" model="ir.model">
+        <field name="name">Employee</field>
+        <field name="model">nhan_su.employee</field>
+        <field name="state">base</field>
+    </record>
+    <record id="model_nhan_su_department" model="ir.model">
+        <field name="name">Department</field>
+        <field name="model">nhan_su.department</field>
+        <field name="state">base</field>
+    </record>
+    <record id="model_nhan_su_position" model="ir.model">
+        <field name="name">Position</field>
+        <field name="model">nhan_su.position</field>
+        <field name="state">base</field>
+    </record>
+    <record id="model_nhan_su_contract" model="ir.model">
+        <field name="name">Contract</field>
+        <field name="model">nhan_su.contract</field>
+        <field name="state">base</field>
+    </record>
+    <record id="model_nhan_su_attendance" model="ir.model">
+        <field name="name">Attendance</field>
+        <field name="model">nhan_su.attendance</field>
+        <field name="state">base</field>
+    </record>
+    <record id="model_nhan_su_salary" model="ir.model">
+        <field name="name">Salary</field>
+        <field name="model">nhan_su.salary</field>
+        <field name="state">base</field>
+    </record>
+    <record id="model_nhan_su_leave" model="ir.model">
+        <field name="name">Leave</field>
+        <field name="model">nhan_su.leave</field>
+        <field name="state">base</field>
+    </record>
+    <record id="model_nhan_su_discipline" model="ir.model">
+        <field name="name">Discipline</field>
+        <field name="model">nhan_su.discipline</field>
+        <field name="state">base</field>
+    </record>
+    <record id="model_nhan_su_reward" model="ir.model">
+        <field name="name">Reward</field>
+        <field name="model">nhan_su.reward</field>
+        <field name="state">base</field>
+    </record>
+</odoo>
