@@ -9,7 +9,7 @@
                 <field name="province"/>
                 <field name="department_id"/>
                 <field name="position_id"/>
-                <field name="late" invisible="1"/>
+                <!-- <field name="late" invisible="1"/> removed: field does not exist in model -->
             </tree>
         </field>
     </record>
