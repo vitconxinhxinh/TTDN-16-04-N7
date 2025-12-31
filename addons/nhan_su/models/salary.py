@@ -42,9 +42,35 @@ class Salary(models.Model):
             else:
                 rec.so_cong = 0
 
-    @api.depends('so_cong', 'base_salary', 'bonus', 'penalty')
+    @api.depends('so_cong', 'base_salary', 'bonus', 'penalty', 'employee_id')
     def _compute_luong_nhan(self):
         for rec in self:
-            cong = rec.so_cong or 1
-            daily_salary = rec.base_salary / cong if rec.base_salary else 0
-            rec.luong_nhan = rec.so_cong + daily_salary + rec.bonus - rec.penalty
+            # Ngày công chuẩn mặc định 26
+            ngay_cong_chuan = 26
+            allowance = rec.employee_id.allowance if rec.employee_id else 0.0
+            tong_lcb_pc = (rec.base_salary or 0.0) + (allowance or 0.0)
+            so_cong = rec.so_cong or 0.0
+            rec.luong_nhan = (tong_lcb_pc / ngay_cong_chuan * so_cong) + rec.bonus - rec.penalty
+
+    # Cảnh báo đi muộn/về sớm
+    @api.model
+    def check_late_early(self, employee_id, month, year):
+        Attendance = self.env['nhan_su.attendance']
+        from datetime import datetime, time, timedelta
+        late_count = 0
+        early_count = 0
+        records = Attendance.search([
+            ('employee_id', '=', employee_id),
+            ('ngay_cham_cong', '>=', f"{year}-{str(month).zfill(2)}-01"),
+            ('ngay_cham_cong', '<=', f"{year}-{str(month).zfill(2)}-31")
+        ])
+        for att in records:
+            if att.gio_vao:
+                gio_vao = fields.Datetime.from_string(att.gio_vao)
+                if gio_vao.time() > time(8,45):
+                    late_count += 1
+            if att.gio_ra:
+                gio_ra = fields.Datetime.from_string(att.gio_ra)
+                if gio_ra.time() < time(17,45):
+                    early_count += 1
+        return late_count, early_count
