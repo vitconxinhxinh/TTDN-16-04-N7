@@ -71,14 +71,13 @@ class Attendance(models.Model):
         if not self.gio_vao or not self.gio_ra:
             warning = False
         else:
-            gio_vao = self.gio_vao.time()
-            gio_ra = self.gio_ra.time()
-            # Ưu tiên kiểm tra đúng giờ trước: nếu vào đúng giờ và ra đúng/ra muộn thì không cảnh báo
-            if gio_vao <= time(8, 45) and gio_ra >= time(17, 30):
+            gio_vao = self.gio_vao.time().replace(microsecond=0)
+            gio_ra = self.gio_ra.time().replace(microsecond=0)
+            # So sánh chính xác từng giây
+            if gio_vao <= time(8, 45, 0) and gio_ra >= time(17, 30, 0):
                 warning = False
             else:
-                # Nếu vào muộn hoặc về sớm thì cảnh báo
-                if gio_vao > time(8, 45) or gio_ra < time(17, 25):
+                if gio_vao > time(8, 45, 0) or gio_ra < time(17, 25, 0):
                     warning = True
         if warning:
             # Thêm cảnh báo nếu chưa có
