@@ -16,25 +16,26 @@ class Salary(models.Model):
     so_cong = fields.Float('Số công', compute='_compute_so_cong', store=True)
     late_days = fields.Integer('Số ngày đi muộn', required=True)
     overtime_hours = fields.Float('Số giờ tăng ca', compute='_compute_overtime_hours', store=True)
-        @api.depends('employee_id', 'month', 'year')
-        def _compute_overtime_hours(self):
-            for rec in self:
-                total_ot = 0.0
-                if rec.employee_id and rec.month and rec.year:
-                    Attendance = self.env['nhan_su.attendance']
-                    from datetime import time
-                    records = Attendance.search([
-                        ('employee_id', '=', rec.employee_id.id),
-                        ('ngay_cham_cong', '>=', f"{rec.year}-{str(rec.month).zfill(2)}-01"),
-                        ('ngay_cham_cong', '<=', f"{rec.year}-{str(rec.month).zfill(2)}-31")
-                    ])
-                    for att in records:
-                        if att.gio_ra:
-                            gio_ra = fields.Datetime.from_string(att.gio_ra)
-                            if gio_ra.time() > time(17,30):
-                                ot = (gio_ra.hour + gio_ra.minute/60 + gio_ra.second/3600) - 17.5
-                                total_ot += max(0, ot)
-                rec.overtime_hours = total_ot
+
+    @api.depends('employee_id', 'month', 'year')
+    def _compute_overtime_hours(self):
+        for rec in self:
+            total_ot = 0.0
+            if rec.employee_id and rec.month and rec.year:
+                Attendance = self.env['nhan_su.attendance']
+                from datetime import time
+                records = Attendance.search([
+                    ('employee_id', '=', rec.employee_id.id),
+                    ('ngay_cham_cong', '>=', f"{rec.year}-{str(rec.month).zfill(2)}-01"),
+                    ('ngay_cham_cong', '<=', f"{rec.year}-{str(rec.month).zfill(2)}-31")
+                ])
+                for att in records:
+                    if att.gio_ra:
+                        gio_ra = fields.Datetime.from_string(att.gio_ra)
+                        if gio_ra.time() > time(17,30):
+                            ot = (gio_ra.hour + gio_ra.minute/60 + gio_ra.second/3600) - 17.5
+                            total_ot += max(0, ot)
+            rec.overtime_hours = total_ot
     bonus = fields.Float('Thưởng', default=0.0)
     penalty = fields.Float('Phạt', default=0.0)
     leave_days = fields.Integer('Số ngày nghỉ phép', default=0)
