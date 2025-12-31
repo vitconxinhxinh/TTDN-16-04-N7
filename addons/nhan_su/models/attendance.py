@@ -67,22 +67,25 @@ class Attendance(models.Model):
         # Cảnh báo đi muộn/về sớm
         from datetime import time
         import re
+        import pytz
         warning = False
         # Nếu giờ vào hoặc giờ ra chưa có thì không cảnh báo
         if not self.gio_vao or not self.gio_ra:
             warning = False
         else:
-            gio_vao = self.gio_vao.time().replace(microsecond=0)
-            gio_ra = self.gio_ra.time().replace(microsecond=0)
+            # Chuyển đổi sang múi giờ Asia/Ho_Chi_Minh trước khi so sánh
+            tz = pytz.timezone('Asia/Ho_Chi_Minh')
+            gio_vao_local = self.gio_vao.astimezone(tz).time().replace(microsecond=0)
+            gio_ra_local = self.gio_ra.astimezone(tz).time().replace(microsecond=0)
             # So sánh chính xác từng giây
-            if gio_vao <= time(8, 45, 0) and gio_ra >= time(17, 30, 0):
+            if gio_vao_local <= time(8, 45, 0) and gio_ra_local >= time(17, 30, 0):
                 warning = False
                 # Luôn xóa mọi cảnh báo nếu hợp lệ
                 if self.note and '[Cảnh báo: Đi muộn/Về sớm]' in self.note:
                     new_note = re.sub(r'(\s*\[Cảnh báo: Đi muộn/Về sớm\])+', '', self.note).strip()
                     self.with_context(skip_update_salary_info=True).write({'note': new_note})
             else:
-                if gio_vao > time(8, 45, 0) or gio_ra < time(17, 25, 0):
+                if gio_vao_local > time(8, 45, 0) or gio_ra_local < time(17, 25, 0):
                     warning = True
         if warning:
             # Thêm cảnh báo nếu chưa có
