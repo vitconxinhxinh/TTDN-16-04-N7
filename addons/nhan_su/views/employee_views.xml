@@ -9,6 +9,7 @@
                 <field name="province"/>
                 <field name="department_id"/>
                 <field name="position_id"/>
+                <field name="late" invisible="1"/>
             </tree>
         </field>
     </record>
