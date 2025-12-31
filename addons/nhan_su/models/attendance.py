@@ -5,6 +5,22 @@ from datetime import datetime, timedelta, time
 
 
 class Attendance(models.Model):
+        def unlink(self):
+            # Lưu lại thông tin nhân viên, tháng, năm trước khi xóa
+            affected = [(rec.employee_id, rec.ngay_cham_cong.month if rec.ngay_cham_cong else None, rec.ngay_cham_cong.year if rec.ngay_cham_cong else None) for rec in self]
+            res = super().unlink()
+            # Sau khi xóa, cập nhật lại bảng lương liên quan
+            Salary = self.env['nhan_su.salary']
+            for emp, month, year in affected:
+                if emp and month and year:
+                    salary = Salary.search([
+                        ('employee_id', '=', emp.id),
+                        ('month', '=', str(month)),
+                        ('year', '=', str(year))
+                    ], limit=1)
+                    if salary:
+                        salary._compute_so_cong()
+            return res
     _name = 'nhan_su.attendance'
     _description = 'Chấm công'
 
