@@ -43,7 +43,6 @@
                                 <field name="position_id"/>
                                 <field name="base_salary"/>
                                 <field name="allowance"/>
-                                <field name="total_salary" readonly="1"/>
                             </group>
                         </page>
                         <page string="Hợp đồng">
@@ -66,7 +65,6 @@
                                     <field name="bonus"/>
                                     <field name="penalty"/>
                                     <field name="leave_days"/>
-                                    <field name="total_salary"/>
                                 </tree>
                             </field>
                         </page>
