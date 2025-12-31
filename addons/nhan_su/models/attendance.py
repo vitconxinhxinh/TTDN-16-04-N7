@@ -11,13 +11,14 @@ class Attendance(models.Model):
     @api.model
     def create(self, vals):
         att = super().create(vals)
-        att._update_salary_info()
+        att.with_context(skip_update_salary_info=True)._update_salary_info()
         return att
 
     def write(self, vals):
         res = super().write(vals)
-        for rec in self:
-            rec._update_salary_info()
+        if not self.env.context.get('skip_update_salary_info'):
+            for rec in self:
+                rec.with_context(skip_update_salary_info=True)._update_salary_info()
         return res
 
     def _update_salary_info(self):
@@ -48,7 +49,8 @@ class Attendance(models.Model):
         if self.gio_ra and self.gio_ra.time() < time(17,15):
             warning = True
         if warning:
-            self.note = (self.note or '') + ' [Cảnh báo: Đi muộn/Về sớm]'
+            # Use self.with_context to avoid recursion
+            self.with_context(skip_update_salary_info=True).write({'note': (self.note or '') + ' [Cảnh báo: Đi muộn/Về sớm]'})
 
     employee_id = fields.Many2one('nhan_su.employee', string='Nhân viên', required=True)
     ngay_cham_cong = fields.Date('Ngày chấm công')
