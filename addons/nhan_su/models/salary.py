@@ -2,6 +2,7 @@ from odoo import models, fields, api
 
 
 class Salary(models.Model):
+        date = fields.Date('Ngày', default=fields.Date.today, required=True)
     _name = 'nhan_su.salary'
     _description = 'Lương thưởng'
 
