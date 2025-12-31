@@ -61,7 +61,6 @@
                                     <field name="month"/>
                                     <field name="year"/>
                                     <field name="base_salary"/>
-                                    <field name="work_days"/>
                                     <field name="late_days"/>
                                     <field name="overtime_hours"/>
                                     <field name="bonus"/>
