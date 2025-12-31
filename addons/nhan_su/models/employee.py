@@ -16,7 +16,7 @@ class Employee(models.Model):
             rec.total_salary = rec.base_salary + rec.allowance
 
     identifier = fields.Char('Mã định danh', required=True, copy=False, readonly=True, default=lambda self: self._generate_identifier())
-    code = fields.Char('Mã nhân viên')
+    code = fields.Char('Mã nhân viên', readonly=True, copy=False, default=lambda self: self._generate_code())
     late = fields.Boolean('Đi trễ')
     name = fields.Char('Họ và tên', required=True)
     province = fields.Selection([
@@ -95,11 +95,20 @@ class Employee(models.Model):
         ('identifier_unique', 'unique(identifier)', 'Mã định danh phải là duy nhất!'),
     ]
 
+
     @api.model
     def create(self, vals):
         if not vals.get('identifier'):
             vals['identifier'] = self._generate_identifier()
+        if not vals.get('code'):
+            vals['code'] = self._generate_code()
         return super().create(vals)
+
+    @api.model
+    def _generate_code(self):
+        last = self.search([], order='id desc', limit=1)
+        next_id = (last.id or 0) + 1
+        return 'MSNV%05d' % next_id
 
     @api.model
     def _generate_identifier(self):
