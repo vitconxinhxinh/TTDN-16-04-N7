@@ -66,6 +66,7 @@ class Attendance(models.Model):
         # Cập nhật số công (so_cong sẽ tự động compute)
         # Cảnh báo đi muộn/về sớm
         from datetime import time
+        import re
         warning = False
         # Nếu giờ vào hoặc giờ ra chưa có thì không cảnh báo
         if not self.gio_vao or not self.gio_ra:
@@ -76,9 +77,10 @@ class Attendance(models.Model):
             # So sánh chính xác từng giây
             if gio_vao <= time(8, 45, 0) and gio_ra >= time(17, 30, 0):
                 warning = False
-                # Luôn xóa cảnh báo nếu hợp lệ
+                # Luôn xóa mọi cảnh báo nếu hợp lệ
                 if self.note and '[Cảnh báo: Đi muộn/Về sớm]' in self.note:
-                    self.with_context(skip_update_salary_info=True).write({'note': self.note.replace(' [Cảnh báo: Đi muộn/Về sớm]', '')})
+                    new_note = re.sub(r'(\s*\[Cảnh báo: Đi muộn/Về sớm\])+', '', self.note).strip()
+                    self.with_context(skip_update_salary_info=True).write({'note': new_note})
             else:
                 if gio_vao > time(8, 45, 0) or gio_ra < time(17, 25, 0):
                     warning = True
@@ -87,9 +89,10 @@ class Attendance(models.Model):
             if not self.note or '[Cảnh báo: Đi muộn/Về sớm]' not in self.note:
                 self.with_context(skip_update_salary_info=True).write({'note': (self.note or '') + ' [Cảnh báo: Đi muộn/Về sớm]'})
         else:
-            # Luôn xóa cảnh báo nếu không còn vi phạm
+            # Luôn xóa mọi cảnh báo nếu không còn vi phạm
             if self.note and '[Cảnh báo: Đi muộn/Về sớm]' in self.note:
-                self.with_context(skip_update_salary_info=True).write({'note': self.note.replace(' [Cảnh báo: Đi muộn/Về sớm]', '')})
+                new_note = re.sub(r'(\s*\[Cảnh báo: Đi muộn/Về sớm\])+', '', self.note).strip()
+                self.with_context(skip_update_salary_info=True).write({'note': new_note})
 
     employee_id = fields.Many2one('nhan_su.employee', string='Nhân viên', required=True)
     ngay_cham_cong = fields.Date('Ngày chấm công')
