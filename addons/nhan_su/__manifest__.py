@@ -26,8 +26,16 @@
     'data': [
         'models/models.xml',
         'security/ir.model.access.csv',
-        'views/nhan_vien.xml',
-        'views/menu.xml',
+        'views/employee_views.xml',
+        'views/department_views.xml',
+        'views/position_views.xml',
+        'views/contract_views.xml',
+        'views/attendance_views.xml',
+        'views/salary_views.xml',
+        'views/leave_views.xml',
+        'views/discipline_views.xml',
+        'views/reward_views.xml',
+        'views/nhan_su_menu.xml',
     ],
     # only loaded in demonstration mode
     'demo': [
