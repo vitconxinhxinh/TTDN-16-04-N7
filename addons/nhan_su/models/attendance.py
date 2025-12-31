@@ -59,6 +59,8 @@ class Attendance(models.Model):
                 'year': year,
                 'base_salary': self.employee_id.base_salary,
             })
+        # Đảm bảo cập nhật lại số công khi có thay đổi chấm công
+        salary._compute_so_cong()
         # Cập nhật số công (so_cong sẽ tự động compute)
         # Cảnh báo đi muộn/về sớm
         from datetime import time
