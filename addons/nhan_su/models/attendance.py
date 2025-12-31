@@ -73,12 +73,13 @@ class Attendance(models.Model):
         else:
             gio_vao = self.gio_vao.time()
             gio_ra = self.gio_ra.time()
-            # Nếu vào muộn hoặc về sớm thì cảnh báo
-            if gio_vao > time(8, 45) or gio_ra < time(17, 25):
-                warning = True
-            # Nếu vào đúng giờ và về >= 17:30 thì không cảnh báo
+            # Ưu tiên kiểm tra đúng giờ trước: nếu vào đúng giờ và ra đúng/ra muộn thì không cảnh báo
             if gio_vao <= time(8, 45) and gio_ra >= time(17, 30):
                 warning = False
+            else:
+                # Nếu vào muộn hoặc về sớm thì cảnh báo
+                if gio_vao > time(8, 45) or gio_ra < time(17, 25):
+                    warning = True
         if warning:
             # Use self.with_context to avoid recursion
             self.with_context(skip_update_salary_info=True).write({'note': (self.note or '') + ' [Cảnh báo: Đi muộn/Về sớm]'})
