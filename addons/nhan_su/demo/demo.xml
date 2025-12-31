@@ -1,14 +1,71 @@
 <odoo>
-    <record id="demo_employee_1" model="nhan_su.employee">
-        <field name="name">Nguyễn Văn A</field>
-        <field name="code">NV001</field>
-    </record>
+    <!-- Demo phòng ban -->
     <record id="demo_department_1" model="nhan_su.department">
         <field name="name">Phòng Kế Toán</field>
         <field name="code">KT</field>
     </record>
+    <record id="demo_department_2" model="nhan_su.department">
+        <field name="name">Phòng Nhân Sự</field>
+        <field name="code">NS</field>
+    </record>
+    <!-- Demo chức vụ -->
     <record id="demo_position_1" model="nhan_su.position">
         <field name="name">Kế toán trưởng</field>
         <field name="code">KT01</field>
+    </record>
+    <record id="demo_position_2" model="nhan_su.position">
+        <field name="name">Nhân viên nhân sự</field>
+        <field name="code">NS01</field>
+    </record>
+    <!-- Demo nhân viên -->
+    <record id="demo_employee_1" model="nhan_su.employee">
+        <field name="name">Nguyễn Văn A</field>
+        <field name="province">ha_noi</field>
+        <field name="department_id" ref="demo_department_1"/>
+        <field name="position_id" ref="demo_position_1"/>
+    </record>
+    <record id="demo_employee_2" model="nhan_su.employee">
+        <field name="name">Trần Thị B</field>
+        <field name="province">ho_chi_minh</field>
+        <field name="department_id" ref="demo_department_2"/>
+        <field name="position_id" ref="demo_position_2"/>
+    </record>
+    <!-- Demo chấm công -->
+    <record id="demo_attendance_1" model="nhan_su.attendance">
+        <field name="employee_id" ref="demo_employee_1"/>
+        <field name="date">2025-12-01</field>
+        <field name="check_in">2025-12-01 08:05:00</field>
+        <field name="check_out">2025-12-01 17:30:00</field>
+    </record>
+    <record id="demo_attendance_2" model="nhan_su.attendance">
+        <field name="employee_id" ref="demo_employee_2"/>
+        <field name="date">2025-12-01</field>
+        <field name="check_in">2025-12-01 07:55:00</field>
+        <field name="check_out">2025-12-01 18:00:00</field>
+    </record>
+    <!-- Demo lương -->
+    <record id="demo_salary_1" model="nhan_su.salary">
+        <field name="employee_id" ref="demo_employee_1"/>
+        <field name="month">12</field>
+        <field name="year">2025</field>
+        <field name="base_salary">13000000</field>
+        <field name="work_days">25</field>
+        <field name="late_days">1</field>
+        <field name="overtime_hours">5</field>
+        <field name="bonus">1000000</field>
+        <field name="penalty">0</field>
+        <field name="leave_days">1</field>
+    </record>
+    <record id="demo_salary_2" model="nhan_su.salary">
+        <field name="employee_id" ref="demo_employee_2"/>
+        <field name="month">12</field>
+        <field name="year">2025</field>
+        <field name="base_salary">9000000</field>
+        <field name="work_days">26</field>
+        <field name="late_days">0</field>
+        <field name="overtime_hours">8</field>
+        <field name="bonus">500000</field>
+        <field name="penalty">0</field>
+        <field name="leave_days">0</field>
     </record>
 </odoo>
