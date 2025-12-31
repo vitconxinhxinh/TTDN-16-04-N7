@@ -1,0 +1,32 @@
+<odoo>
+    <record id="view_attendance_tree" model="ir.ui.view">
+        <field name="name">nhan_su.attendance.tree</field>
+        <field name="model">nhan_su.attendance</field>
+        <field name="arch" type="xml">
+            <tree>
+                <field name="employee_id"/>
+                <field name="date"/>
+                <field name="check_in"/>
+                <field name="check_out"/>
+                <field name="note"/>
+            </tree>
+        </field>
+    </record>
+    <record id="view_attendance_form" model="ir.ui.view">
+        <field name="name">nhan_su.attendance.form</field>
+        <field name="model">nhan_su.attendance</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <group>
+                        <field name="employee_id"/>
+                        <field name="date"/>
+                        <field name="check_in"/>
+                        <field name="check_out"/>
+                        <field name="note"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+</odoo>

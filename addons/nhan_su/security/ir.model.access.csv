@@ -1,2 +1,11 @@
 id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
 access_nhan_vien,nhan_vien.nhan_vien,model_nhan_vien,base.group_user,1,1,1,1
+access_nhan_su_employee,nhan_su.employee,model_nhan_su_employee,,1,1,1,1
+access_nhan_su_department,nhan_su.department,model_nhan_su_department,,1,1,1,1
+access_nhan_su_position,nhan_su.position,model_nhan_su_position,,1,1,1,1
+access_nhan_su_contract,nhan_su.contract,model_nhan_su_contract,,1,1,1,1
+access_nhan_su_attendance,nhan_su.attendance,model_nhan_su_attendance,,1,1,1,1
+access_nhan_su_salary,nhan_su.salary,model_nhan_su_salary,,1,1,1,1
+access_nhan_su_leave,nhan_su.leave,model_nhan_su_leave,,1,1,1,1
+access_nhan_su_discipline,nhan_su.discipline,model_nhan_su_discipline,,1,1,1,1
+access_nhan_su_reward,nhan_su.reward,model_nhan_su_reward,,1,1,1,1

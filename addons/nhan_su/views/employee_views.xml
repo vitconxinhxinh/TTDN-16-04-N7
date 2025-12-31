@@ -1,0 +1,85 @@
+<odoo>
+    <record id="view_employee_tree" model="ir.ui.view">
+        <field name="name">nhan_su.employee.tree</field>
+        <field name="model">nhan_su.employee</field>
+        <field name="arch" type="xml">
+            <tree>
+                <field name="name"/>
+                <field name="code"/>
+                <field name="department_id"/>
+                <field name="position_id"/>
+            </tree>
+        </field>
+    </record>
+    <record id="view_employee_form" model="ir.ui.view">
+        <field name="name">nhan_su.employee.form</field>
+        <field name="model">nhan_su.employee</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <group>
+                        <field name="name"/>
+                        <field name="code"/>
+                        <field name="department_id"/>
+                        <field name="position_id"/>
+                    </group>
+                    <notebook>
+                        <page string="Hợp đồng">
+                            <field name="contract_ids">
+                                <tree>
+                                    <field name="name"/>
+                                    <field name="start_date"/>
+                                    <field name="end_date"/>
+                                </tree>
+                            </field>
+                        </page>
+                        <page string="Chấm công">
+                            <field name="attendance_ids">
+                                <tree>
+                                    <field name="date"/>
+                                    <field name="check_in"/>
+                                    <field name="check_out"/>
+                                </tree>
+                            </field>
+                        </page>
+                        <page string="Lương thưởng">
+                            <field name="salary_ids">
+                                <tree>
+                                    <field name="date"/>
+                                    <field name="amount"/>
+                                </tree>
+                            </field>
+                        </page>
+                        <page string="Nghỉ phép">
+                            <field name="leave_ids">
+                                <tree>
+                                    <field name="start_date"/>
+                                    <field name="end_date"/>
+                                    <field name="state"/>
+                                </tree>
+                            </field>
+                        </page>
+                        <page string="Kỷ luật">
+                            <field name="discipline_ids">
+                                <tree>
+                                    <field name="date"/>
+                                    <field name="reason"/>
+                                    <field name="amount"/>
+                                </tree>
+                            </field>
+                        </page>
+                        <page string="Khen thưởng">
+                            <field name="reward_ids">
+                                <tree>
+                                    <field name="date"/>
+                                    <field name="reason"/>
+                                    <field name="amount"/>
+                                </tree>
+                            </field>
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+</odoo>

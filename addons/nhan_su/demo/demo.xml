@@ -1,0 +1,14 @@
+<odoo>
+    <record id="demo_employee_1" model="nhan_su.employee">
+        <field name="name">Nguyễn Văn A</field>
+        <field name="code">NV001</field>
+    </record>
+    <record id="demo_department_1" model="nhan_su.department">
+        <field name="name">Phòng Kế Toán</field>
+        <field name="code">KT</field>
+    </record>
+    <record id="demo_position_1" model="nhan_su.position">
+        <field name="name">Kế toán trưởng</field>
+        <field name="code">KT01</field>
+    </record>
+</odoo>

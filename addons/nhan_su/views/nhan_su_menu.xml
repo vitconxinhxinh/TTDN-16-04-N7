@@ -1,0 +1,58 @@
+<odoo>
+    <menuitem id="menu_nhan_su_root" name="Nhân Sự" sequence="10"/>
+    <menuitem id="menu_nhan_su_employee" name="Nhân viên" parent="menu_nhan_su_root" action="action_nhan_su_employee"/>
+    <menuitem id="menu_nhan_su_department" name="Phòng ban" parent="menu_nhan_su_root" action="action_nhan_su_department"/>
+    <menuitem id="menu_nhan_su_position" name="Chức vụ" parent="menu_nhan_su_root" action="action_nhan_su_position"/>
+    <menuitem id="menu_nhan_su_contract" name="Hợp đồng" parent="menu_nhan_su_root" action="action_nhan_su_contract"/>
+    <menuitem id="menu_nhan_su_attendance" name="Chấm công" parent="menu_nhan_su_root" action="action_nhan_su_attendance"/>
+    <menuitem id="menu_nhan_su_salary" name="Lương thưởng" parent="menu_nhan_su_root" action="action_nhan_su_salary"/>
+    <menuitem id="menu_nhan_su_leave" name="Nghỉ phép" parent="menu_nhan_su_root" action="action_nhan_su_leave"/>
+    <menuitem id="menu_nhan_su_discipline" name="Kỷ luật" parent="menu_nhan_su_root" action="action_nhan_su_discipline"/>
+    <menuitem id="menu_nhan_su_reward" name="Khen thưởng" parent="menu_nhan_su_root" action="action_nhan_su_reward"/>
+
+    <record id="action_nhan_su_employee" model="ir.actions.act_window">
+        <field name="name">Nhân viên</field>
+        <field name="res_model">nhan_su.employee</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+    <record id="action_nhan_su_department" model="ir.actions.act_window">
+        <field name="name">Phòng ban</field>
+        <field name="res_model">nhan_su.department</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+    <record id="action_nhan_su_position" model="ir.actions.act_window">
+        <field name="name">Chức vụ</field>
+        <field name="res_model">nhan_su.position</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+    <record id="action_nhan_su_contract" model="ir.actions.act_window">
+        <field name="name">Hợp đồng</field>
+        <field name="res_model">nhan_su.contract</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+    <record id="action_nhan_su_attendance" model="ir.actions.act_window">
+        <field name="name">Chấm công</field>
+        <field name="res_model">nhan_su.attendance</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+    <record id="action_nhan_su_salary" model="ir.actions.act_window">
+        <field name="name">Lương thưởng</field>
+        <field name="res_model">nhan_su.salary</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+    <record id="action_nhan_su_leave" model="ir.actions.act_window">
+        <field name="name">Nghỉ phép</field>
+        <field name="res_model">nhan_su.leave</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+    <record id="action_nhan_su_discipline" model="ir.actions.act_window">
+        <field name="name">Kỷ luật</field>
+        <field name="res_model">nhan_su.discipline</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+    <record id="action_nhan_su_reward" model="ir.actions.act_window">
+        <field name="name">Khen thưởng</field>
+        <field name="res_model">nhan_su.reward</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+</odoo>

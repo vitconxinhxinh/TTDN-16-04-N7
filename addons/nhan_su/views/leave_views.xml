@@ -1,0 +1,32 @@
+<odoo>
+    <record id="view_leave_tree" model="ir.ui.view">
+        <field name="name">nhan_su.leave.tree</field>
+        <field name="model">nhan_su.leave</field>
+        <field name="arch" type="xml">
+            <tree>
+                <field name="employee_id"/>
+                <field name="start_date"/>
+                <field name="end_date"/>
+                <field name="reason"/>
+                <field name="state"/>
+            </tree>
+        </field>
+    </record>
+    <record id="view_leave_form" model="ir.ui.view">
+        <field name="name">nhan_su.leave.form</field>
+        <field name="model">nhan_su.leave</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <group>
+                        <field name="employee_id"/>
+                        <field name="start_date"/>
+                        <field name="end_date"/>
+                        <field name="reason"/>
+                        <field name="state"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+</odoo>
