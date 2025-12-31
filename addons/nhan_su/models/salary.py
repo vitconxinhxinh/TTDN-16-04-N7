@@ -14,7 +14,7 @@ class Salary(models.Model):
     year = fields.Char('Năm', required=True, default=lambda self: fields.Date.today().year)
     base_salary = fields.Float('Lương cơ bản', required=True)
     so_cong = fields.Float('Số công', compute='_compute_so_cong', store=True)
-    late_days = fields.Integer('Số ngày đi muộn', required=True)
+    late_days = fields.Integer('Số ngày đi muộn', required=True, default=0)
     overtime_hours = fields.Float('Số giờ tăng ca', compute='_compute_overtime_hours', store=True)
 
     @api.depends('employee_id', 'month', 'year')
