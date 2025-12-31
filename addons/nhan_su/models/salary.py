@@ -15,7 +15,26 @@ class Salary(models.Model):
     base_salary = fields.Float('Lương cơ bản', required=True)
     so_cong = fields.Float('Số công', compute='_compute_so_cong', store=True)
     late_days = fields.Integer('Số ngày đi muộn', required=True)
-    overtime_hours = fields.Float('Số giờ tăng ca', required=True)
+    overtime_hours = fields.Float('Số giờ tăng ca', compute='_compute_overtime_hours', store=True)
+        @api.depends('employee_id', 'month', 'year')
+        def _compute_overtime_hours(self):
+            for rec in self:
+                total_ot = 0.0
+                if rec.employee_id and rec.month and rec.year:
+                    Attendance = self.env['nhan_su.attendance']
+                    from datetime import time
+                    records = Attendance.search([
+                        ('employee_id', '=', rec.employee_id.id),
+                        ('ngay_cham_cong', '>=', f"{rec.year}-{str(rec.month).zfill(2)}-01"),
+                        ('ngay_cham_cong', '<=', f"{rec.year}-{str(rec.month).zfill(2)}-31")
+                    ])
+                    for att in records:
+                        if att.gio_ra:
+                            gio_ra = fields.Datetime.from_string(att.gio_ra)
+                            if gio_ra.time() > time(17,30):
+                                ot = (gio_ra.hour + gio_ra.minute/60 + gio_ra.second/3600) - 17.5
+                                total_ot += max(0, ot)
+                rec.overtime_hours = total_ot
     bonus = fields.Float('Thưởng', default=0.0)
     penalty = fields.Float('Phạt', default=0.0)
     leave_days = fields.Integer('Số ngày nghỉ phép', default=0)
@@ -42,7 +61,7 @@ class Salary(models.Model):
             else:
                 rec.so_cong = 0
 
-    @api.depends('so_cong', 'base_salary', 'bonus', 'penalty', 'employee_id')
+    @api.depends('so_cong', 'base_salary', 'bonus', 'penalty', 'employee_id', 'overtime_hours')
     def _compute_luong_nhan(self):
         for rec in self:
             # Ngày công chuẩn mặc định 26
@@ -50,7 +69,11 @@ class Salary(models.Model):
             allowance = rec.employee_id.allowance if rec.employee_id else 0.0
             tong_lcb_pc = (rec.base_salary or 0.0) + (allowance or 0.0)
             so_cong = rec.so_cong or 0.0
-            rec.luong_nhan = (tong_lcb_pc / ngay_cong_chuan * so_cong) + rec.bonus - rec.penalty
+            # Lương hành chính 1 ngày
+            daily_salary = tong_lcb_pc / ngay_cong_chuan if ngay_cong_chuan else 0.0
+            # Lương tăng ca: 1.5x lương giờ hành chính
+            overtime_salary = rec.overtime_hours * (daily_salary / 8) * 1.5
+            rec.luong_nhan = (daily_salary * so_cong) + overtime_salary + rec.bonus - rec.penalty
 
     # Cảnh báo đi muộn/về sớm
     @api.model
