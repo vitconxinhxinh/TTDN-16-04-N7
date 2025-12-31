@@ -22,10 +22,10 @@ class Salary(models.Model):
     luong_nhan = fields.Float('Lương nhận', compute='_compute_luong_nhan', store=True)
     note = fields.Char('Ghi chú')
 
-    @api.depends('total_salary')
+    @api.depends('luong_nhan')
     def _compute_amount(self):
         for rec in self:
-            rec.amount = rec.total_salary
+            rec.amount = rec.luong_nhan
 
 
     @api.depends('employee_id', 'month', 'year')
