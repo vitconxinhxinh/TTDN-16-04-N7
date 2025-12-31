@@ -41,6 +41,9 @@
                                 <field name="province"/>
                                 <field name="department_id"/>
                                 <field name="position_id"/>
+                                <field name="base_salary"/>
+                                <field name="allowance"/>
+                                <field name="total_salary" readonly="1"/>
                             </group>
                         </page>
                         <page string="Hợp đồng">
@@ -49,18 +52,6 @@
                                     <field name="name"/>
                                     <field name="start_date"/>
                                     <field name="end_date"/>
-                                </tree>
-                            </field>
-                        </page>
-                        <page string="Chấm công">
-                            <field name="attendance_ids">
-                                <tree>
-                                    <field name="date"/>
-                                    <field name="check_in"/>
-                                    <field name="check_out"/>
-                                    <field name="late"/>
-                                    <field name="overtime"/>
-                                    <field name="work_hours"/>
                                 </tree>
                             </field>
                         </page>

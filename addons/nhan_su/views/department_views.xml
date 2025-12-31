@@ -22,7 +22,6 @@
                     <field name="employee_ids">
                         <tree>
                             <field name="name"/>
-                            <field name="code"/>
                         </tree>
                     </field>
                 </sheet>

@@ -1,0 +1,15 @@
+<odoo>
+    <record id="view_employee_search" model="ir.ui.view">
+        <field name="name">nhan_su.employee.search</field>
+        <field name="model">nhan_su.employee</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name"/>
+                <field name="code"/>
+                <field name="identifier"/>
+                <field name="department_id"/>
+                <field name="position_id"/>
+            </search>
+        </field>
+    </record>
+</odoo>

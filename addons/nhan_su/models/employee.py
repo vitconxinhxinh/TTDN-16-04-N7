@@ -2,10 +2,20 @@ from odoo import models, fields, api
 
 
 class Employee(models.Model):
+        base_salary = fields.Float('Lương cơ bản', default=0.0)
+        allowance = fields.Float('Phụ cấp', default=0.0)
+        total_salary = fields.Float('Tổng lương', compute='_compute_total_salary', store=True)
+
+        @api.depends('base_salary', 'allowance')
+        def _compute_total_salary(self):
+            for rec in self:
+                rec.total_salary = rec.base_salary + rec.allowance
     _name = 'nhan_su.employee'
     _description = 'Nhân viên'
 
     identifier = fields.Char('Mã định danh', required=True, copy=False, readonly=True, default=lambda self: self._generate_identifier())
+    code = fields.Char('Mã nhân viên')
+    late = fields.Boolean('Đi trễ')
     name = fields.Char('Họ và tên', required=True)
     province = fields.Selection([
         ('ha_noi', 'Hà Nội'),
@@ -74,7 +84,6 @@ class Employee(models.Model):
     department_id = fields.Many2one('nhan_su.department', string='Phòng ban')
     position_id = fields.Many2one('nhan_su.position', string='Chức vụ')
     contract_ids = fields.One2many('nhan_su.contract', 'employee_id', string='Hợp đồng lao động')
-    attendance_ids = fields.One2many('nhan_su.attendance', 'employee_id', string='Chấm công')
     salary_ids = fields.One2many('nhan_su.salary', 'employee_id', string='Lương thưởng')
     leave_ids = fields.One2many('nhan_su.leave', 'employee_id', string='Nghỉ phép')
     discipline_ids = fields.One2many('nhan_su.discipline', 'employee_id', string='Kỷ luật')

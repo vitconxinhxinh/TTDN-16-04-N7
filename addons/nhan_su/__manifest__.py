@@ -27,6 +27,7 @@
         'models/models.xml',
         'security/ir.model.access.csv',
         'views/employee_views.xml',
+        'views/employee_search_view.xml',
         'views/department_views.xml',
         'views/position_views.xml',
         'views/contract_views.xml',
