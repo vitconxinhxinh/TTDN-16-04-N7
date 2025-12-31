@@ -2,25 +2,27 @@ from odoo import models, fields, api
 
 
 
+
 class Employee(models.Model):
-        @api.model
-        def create(self, vals):
-            employee = super().create(vals)
-            # Tạo bảng lương cho tháng hiện tại
-            today = fields.Date.today()
-            month = str(today.month)
-            year = str(today.year)
-            Salary = self.env['nhan_su.salary']
-            Salary.create({
-                'employee_id': employee.id,
-                'month': month,
-                'year': year,
-                'base_salary': employee.base_salary,
-                # allowance sẽ lấy trong compute lương
-            })
-            return employee
     _name = 'nhan_su.employee'
     _description = 'Nhân viên'
+
+    @api.model
+    def create(self, vals):
+        employee = super().create(vals)
+        # Tạo bảng lương cho tháng hiện tại
+        today = fields.Date.today()
+        month = str(today.month)
+        year = str(today.year)
+        Salary = self.env['nhan_su.salary']
+        Salary.create({
+            'employee_id': employee.id,
+            'month': month,
+            'year': year,
+            'base_salary': employee.base_salary,
+            # allowance sẽ lấy trong compute lương
+        })
+        return employee
 
     base_salary = fields.Float('Lương cơ bản', default=0.0)
     allowance = fields.Float('Phụ cấp', default=0.0)
