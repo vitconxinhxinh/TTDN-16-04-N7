@@ -61,6 +61,8 @@ class Attendance(models.Model):
             })
         # Đảm bảo cập nhật lại số công khi có thay đổi chấm công
         salary._compute_so_cong()
+        # Ghi lại số công để cập nhật giao diện nếu là trường store=True
+        salary.write({'so_cong': salary.so_cong})
         # Cập nhật số công (so_cong sẽ tự động compute)
         # Cảnh báo đi muộn/về sớm
         from datetime import time
