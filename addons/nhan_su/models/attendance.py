@@ -67,13 +67,22 @@ class Attendance(models.Model):
         # Cảnh báo đi muộn/về sớm
         from datetime import time
         warning = False
-        if self.gio_vao and self.gio_vao.time() > time(8,45):
+        # Đi muộn nếu vào sau 8:45
+        if self.gio_vao and self.gio_vao.time() > time(8, 45):
             warning = True
-        if self.gio_ra and self.gio_ra.time() < time(17,15):
+        # Về sớm nếu ra trước 17:25
+        if self.gio_ra and self.gio_ra.time() < time(17, 25):
             warning = True
+        # Không cảnh báo nếu về sau 17:30 (tăng ca)
+        if self.gio_ra and self.gio_ra.time() >= time(17, 30):
+            warning = False
         if warning:
             # Use self.with_context to avoid recursion
             self.with_context(skip_update_salary_info=True).write({'note': (self.note or '') + ' [Cảnh báo: Đi muộn/Về sớm]'})
+        else:
+            # Xóa cảnh báo nếu không còn vi phạm
+            if self.note and '[Cảnh báo: Đi muộn/Về sớm]' in self.note:
+                self.with_context(skip_update_salary_info=True).write({'note': self.note.replace(' [Cảnh báo: Đi muộn/Về sớm]', '')})
 
     employee_id = fields.Many2one('nhan_su.employee', string='Nhân viên', required=True)
     ngay_cham_cong = fields.Date('Ngày chấm công')
