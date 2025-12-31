@@ -1,17 +1,19 @@
 from odoo import models, fields, api
 
 
-class Employee(models.Model):
-        base_salary = fields.Float('Lương cơ bản', default=0.0)
-        allowance = fields.Float('Phụ cấp', default=0.0)
-        total_salary = fields.Float('Tổng lương', compute='_compute_total_salary', store=True)
 
-        @api.depends('base_salary', 'allowance')
-        def _compute_total_salary(self):
-            for rec in self:
-                rec.total_salary = rec.base_salary + rec.allowance
+class Employee(models.Model):
     _name = 'nhan_su.employee'
     _description = 'Nhân viên'
+
+    base_salary = fields.Float('Lương cơ bản', default=0.0)
+    allowance = fields.Float('Phụ cấp', default=0.0)
+    total_salary = fields.Float('Tổng lương', compute='_compute_total_salary', store=True)
+
+    @api.depends('base_salary', 'allowance')
+    def _compute_total_salary(self):
+        for rec in self:
+            rec.total_salary = rec.base_salary + rec.allowance
 
     identifier = fields.Char('Mã định danh', required=True, copy=False, readonly=True, default=lambda self: self._generate_identifier())
     code = fields.Char('Mã nhân viên')
