@@ -48,6 +48,8 @@
         <field name="month">12</field>
         <field name="year">2025</field>
         <field name="base_salary">13000000</field>
+        <field name="late_days">0</field>
+        <field name="overtime_hours">0</field>
         <field name="bonus">500000</field>
         <field name="penalty">0</field>
     </record>
@@ -56,6 +58,8 @@
         <field name="month">12</field>
         <field name="year">2025</field>
         <field name="base_salary">12000000</field>
+        <field name="late_days">1</field>
+        <field name="overtime_hours">2</field>
         <field name="bonus">0</field>
         <field name="penalty">200000</field>
     </record>
@@ -64,6 +68,8 @@
         <field name="month">12</field>
         <field name="year">2025</field>
         <field name="base_salary">11000000</field>
+        <field name="late_days">0</field>
+        <field name="overtime_hours">0</field>
         <field name="bonus">0</field>
         <field name="penalty">0</field>
     </record>
