@@ -2,18 +2,13 @@ from odoo import models, fields, api
 
 
 
-class Salary(models.Model):
-        amount = fields.Float('Số tiền', compute='_compute_amount', store=True)
 
-        @api.depends('total_salary')
-        def _compute_amount(self):
-            for rec in self:
-                rec.amount = rec.total_salary
+class Salary(models.Model):
     _name = 'nhan_su.salary'
     _description = 'Lương thưởng'
 
     date = fields.Date('Ngày', default=fields.Date.today, required=True)
-
+    amount = fields.Float('Số tiền', compute='_compute_amount', store=True)
     employee_id = fields.Many2one('nhan_su.employee', string='Nhân viên', required=True)
     month = fields.Selection([(str(i), 'Tháng %s' % i) for i in range(1, 13)], string='Tháng', required=True)
     year = fields.Char('Năm', required=True, default=lambda self: fields.Date.today().year)
@@ -26,6 +21,11 @@ class Salary(models.Model):
     leave_days = fields.Integer('Số ngày nghỉ phép', default=0)
     total_salary = fields.Float('Tổng lương', compute='_compute_total_salary', store=True)
     note = fields.Char('Ghi chú')
+
+    @api.depends('total_salary')
+    def _compute_amount(self):
+        for rec in self:
+            rec.amount = rec.total_salary
 
     @api.depends('base_salary', 'work_days', 'late_days', 'overtime_hours', 'bonus', 'penalty', 'leave_days')
     def _compute_total_salary(self):
