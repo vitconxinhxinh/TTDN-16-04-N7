@@ -40,6 +40,6 @@
     ],
     # only loaded in demonstration mode
     'demo': [
-        'demo/demo.xml',
+        'data/demo_data.xml',
     ],
 }

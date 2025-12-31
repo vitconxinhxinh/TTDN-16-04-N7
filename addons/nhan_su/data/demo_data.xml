@@ -1,0 +1,70 @@
+<odoo>
+    <!-- Nhân viên mẫu -->
+    <record id="employee_demo_1" model="nhan_su.employee">
+        <field name="name">Nguyễn Văn A</field>
+        <field name="code">NV001</field>
+        <field name="base_salary">13000000</field>
+        <field name="province">ha_noi</field>
+    </record>
+    <record id="employee_demo_2" model="nhan_su.employee">
+        <field name="name">Trần Thị B</field>
+        <field name="code">NV002</field>
+        <field name="base_salary">12000000</field>
+        <field name="province">ho_chi_minh</field>
+    </record>
+    <record id="employee_demo_3" model="nhan_su.employee">
+        <field name="name">Lê Văn C</field>
+        <field name="code">NV003</field>
+        <field name="base_salary">11000000</field>
+        <field name="province">da_nang</field>
+    </record>
+
+    <!-- Chấm công mẫu -->
+    <record id="attendance_demo_1" model="nhan_su.attendance">
+        <field name="employee_id" ref="employee_demo_1"/>
+        <field name="ngay_cham_cong">2025-12-01</field>
+        <field name="gio_vao">2025-12-01 08:30:00</field>
+        <field name="gio_ra">2025-12-01 17:30:00</field>
+        <field name="trang_thai">di_lam</field>
+    </record>
+    <record id="attendance_demo_2" model="nhan_su.attendance">
+        <field name="employee_id" ref="employee_demo_2"/>
+        <field name="ngay_cham_cong">2025-12-01</field>
+        <field name="gio_vao">2025-12-01 08:45:00</field>
+        <field name="gio_ra">2025-12-01 17:30:00</field>
+        <field name="trang_thai">di_muon</field>
+    </record>
+    <record id="attendance_demo_3" model="nhan_su.attendance">
+        <field name="employee_id" ref="employee_demo_3"/>
+        <field name="ngay_cham_cong">2025-12-01</field>
+        <field name="gio_vao">2025-12-01 08:30:00</field>
+        <field name="gio_ra">2025-12-01 16:30:00</field>
+        <field name="trang_thai">ve_som</field>
+    </record>
+
+    <!-- Bảng lương mẫu -->
+    <record id="salary_demo_1" model="nhan_su.salary">
+        <field name="employee_id" ref="employee_demo_1"/>
+        <field name="month">12</field>
+        <field name="year">2025</field>
+        <field name="base_salary">13000000</field>
+        <field name="bonus">500000</field>
+        <field name="penalty">0</field>
+    </record>
+    <record id="salary_demo_2" model="nhan_su.salary">
+        <field name="employee_id" ref="employee_demo_2"/>
+        <field name="month">12</field>
+        <field name="year">2025</field>
+        <field name="base_salary">12000000</field>
+        <field name="bonus">0</field>
+        <field name="penalty">200000</field>
+    </record>
+    <record id="salary_demo_3" model="nhan_su.salary">
+        <field name="employee_id" ref="employee_demo_3"/>
+        <field name="month">12</field>
+        <field name="year">2025</field>
+        <field name="base_salary">11000000</field>
+        <field name="bonus">0</field>
+        <field name="penalty">0</field>
+    </record>
+</odoo>

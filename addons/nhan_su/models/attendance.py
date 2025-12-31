@@ -8,22 +8,36 @@ class Attendance(models.Model):
     _description = 'Chấm công'
 
     employee_id = fields.Many2one('nhan_su.employee', string='Nhân viên', required=True)
-    date = fields.Date('Ngày')
-    check_in = fields.Datetime('Giờ vào')
-    check_out = fields.Datetime('Giờ ra')
+    ngay_cham_cong = fields.Date('Ngày chấm công')
+    gio_vao = fields.Datetime('Giờ vào')
+    gio_ra = fields.Datetime('Giờ ra')
+    so_gio_lam = fields.Float('Số giờ làm', compute='_compute_so_gio_lam', store=True)
+    trang_thai = fields.Selection([
+        ('di_lam', 'Đi làm'),
+        ('nghi', 'Nghỉ'),
+        ('di_muon', 'Đi muộn'),
+        ('ve_som', 'Về sớm'),
+    ], string='Trạng thái', default='di_lam')
     note = fields.Char('Ghi chú')
-    late = fields.Boolean('Đi muộn', compute='_compute_late', store=True)
-    overtime = fields.Float('Số giờ tăng ca', compute='_compute_overtime', store=True)
-    work_hours = fields.Float('Tổng giờ làm', compute='_compute_work_hours', store=True)
 
-    @api.depends('check_in')
-    def _compute_late(self):
+
+    @api.depends('gio_vao', 'gio_ra')
+    def _compute_so_gio_lam(self):
         for rec in self:
-            if rec.check_in:
-                standard_in = datetime.combine(rec.check_in.date(), time(8, 0))
-                rec.late = rec.check_in > standard_in
+            if rec.gio_vao and rec.gio_ra:
+                # Chuẩn: vào 8:30, ra 17:30, nghỉ trưa 12h-13h
+                start = rec.gio_vao
+                end = rec.gio_ra
+                total = (end - start).total_seconds() / 3600.0
+                # Trừ giờ nghỉ trưa nếu ca làm vượt qua 12h-13h
+                lunch_start = start.replace(hour=12, minute=0, second=0, microsecond=0)
+                lunch_end = start.replace(hour=13, minute=0, second=0, microsecond=0)
+                if start < lunch_start < end:
+                    lunch_overlap = min(end, lunch_end) - lunch_start
+                    total -= lunch_overlap.total_seconds() / 3600.0
+                rec.so_gio_lam = total
             else:
-                rec.late = False
+                rec.so_gio_lam = 0.0
 
     @api.depends('check_in', 'check_out')
     def _compute_work_hours(self):

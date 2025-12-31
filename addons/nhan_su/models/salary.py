@@ -13,13 +13,13 @@ class Salary(models.Model):
     month = fields.Selection([(str(i), 'Tháng %s' % i) for i in range(1, 13)], string='Tháng', required=True)
     year = fields.Char('Năm', required=True, default=lambda self: fields.Date.today().year)
     base_salary = fields.Float('Lương cơ bản', required=True)
-    work_days = fields.Integer('Số ngày công', required=True)
+    so_cong = fields.Float('Số công', compute='_compute_so_cong', store=True)
     late_days = fields.Integer('Số ngày đi muộn', required=True)
     overtime_hours = fields.Float('Số giờ tăng ca', required=True)
     bonus = fields.Float('Thưởng', default=0.0)
     penalty = fields.Float('Phạt', default=0.0)
     leave_days = fields.Integer('Số ngày nghỉ phép', default=0)
-    total_salary = fields.Float('Tổng lương', compute='_compute_total_salary', store=True)
+    luong_nhan = fields.Float('Lương nhận', compute='_compute_luong_nhan', store=True)
     note = fields.Char('Ghi chú')
 
     @api.depends('total_salary')
@@ -27,12 +27,23 @@ class Salary(models.Model):
         for rec in self:
             rec.amount = rec.total_salary
 
-    @api.depends('base_salary', 'work_days', 'late_days', 'overtime_hours', 'bonus', 'penalty', 'leave_days')
-    def _compute_total_salary(self):
+
+    @api.depends('employee_id', 'month', 'year')
+    def _compute_so_cong(self):
         for rec in self:
-            # Giả sử 1 tháng chuẩn 26 ngày công
+            # Đếm số công từ bảng chấm công theo tháng/năm
+            if rec.employee_id and rec.month and rec.year:
+                attendances = self.env['nhan_su.attendance'].search([
+                    ('employee_id', '=', rec.employee_id.id),
+                    ('ngay_cham_cong', '>=', f"{rec.year}-{rec.month.zfill(2)}-01"),
+                    ('ngay_cham_cong', '<=', f"{rec.year}-{rec.month.zfill(2)}-31")
+                ])
+                rec.so_cong = sum(1 for a in attendances if a.trang_thai == 'di_lam')
+            else:
+                rec.so_cong = 0
+
+    @api.depends('so_cong', 'base_salary', 'bonus', 'penalty')
+    def _compute_luong_nhan(self):
+        for rec in self:
             daily_salary = rec.base_salary / 26 if rec.base_salary else 0
-            overtime_pay = rec.overtime_hours * (daily_salary / 8) * 1.5
-            late_penalty = rec.late_days * 50000  # 50k/lần đi muộn
-            leave_penalty = rec.leave_days * daily_salary
-            rec.total_salary = rec.base_salary + overtime_pay + rec.bonus - (rec.penalty + late_penalty + leave_penalty)
+            rec.luong_nhan = rec.so_cong * daily_salary + rec.bonus - rec.penalty
