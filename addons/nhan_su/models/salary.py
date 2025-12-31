@@ -3,6 +3,12 @@ from odoo import models, fields, api
 
 
 class Salary(models.Model):
+        amount = fields.Float('Số tiền', compute='_compute_amount', store=True)
+
+        @api.depends('total_salary')
+        def _compute_amount(self):
+            for rec in self:
+                rec.amount = rec.total_salary
     _name = 'nhan_su.salary'
     _description = 'Lương thưởng'
 
