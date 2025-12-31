@@ -3,13 +3,13 @@
         <field name="name">nhan_su.employee.tree</field>
         <field name="model">nhan_su.employee</field>
         <field name="arch" type="xml">
-            <tree decoration-info="late">
+            <tree>
                 <field name="identifier"/>
                 <field name="name"/>
                 <field name="province"/>
                 <field name="department_id"/>
                 <field name="position_id"/>
-                <!-- <field name="late" invisible="1"/> removed: field does not exist in model -->
+                <!-- 'late' field and decoration removed: not present in model -->
             </tree>
         </field>
     </record>
