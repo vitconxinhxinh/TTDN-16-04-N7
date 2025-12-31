@@ -4,6 +4,47 @@ from odoo import models, fields, api
 from datetime import datetime, timedelta, time
 
 class Attendance(models.Model):
+        @api.model
+        def create(self, vals):
+            att = super().create(vals)
+            att._update_salary_info()
+            return att
+
+        def write(self, vals):
+            res = super().write(vals)
+            for rec in self:
+                rec._update_salary_info()
+            return res
+
+        def _update_salary_info(self):
+            # Tìm bảng lương tháng của nhân viên
+            if not self.employee_id or not self.ngay_cham_cong:
+                return
+            month = str(self.ngay_cham_cong.month)
+            year = str(self.ngay_cham_cong.year)
+            Salary = self.env['nhan_su.salary']
+            salary = Salary.search([
+                ('employee_id', '=', self.employee_id.id),
+                ('month', '=', month),
+                ('year', '=', year)
+            ], limit=1)
+            if not salary:
+                salary = Salary.create({
+                    'employee_id': self.employee_id.id,
+                    'month': month,
+                    'year': year,
+                    'base_salary': self.employee_id.base_salary,
+                })
+            # Cập nhật số công (so_cong sẽ tự động compute)
+            # Cảnh báo đi muộn/về sớm
+            from datetime import time
+            warning = False
+            if self.gio_vao and self.gio_vao.time() > time(8,45):
+                warning = True
+            if self.gio_ra and self.gio_ra.time() < time(17,15):
+                warning = True
+            if warning:
+                self.note = (self.note or '') + ' [Cảnh báo: Đi muộn/Về sớm]'
     _name = 'nhan_su.attendance'
     _description = 'Chấm công'
 
