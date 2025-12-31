@@ -45,5 +45,6 @@ class Salary(models.Model):
     @api.depends('so_cong', 'base_salary', 'bonus', 'penalty')
     def _compute_luong_nhan(self):
         for rec in self:
-            daily_salary = rec.base_salary / 26 if rec.base_salary else 0
-            rec.luong_nhan = rec.so_cong * daily_salary + rec.bonus - rec.penalty
+            cong = rec.so_cong or 1
+            daily_salary = rec.base_salary / cong if rec.base_salary else 0
+            rec.luong_nhan = rec.so_cong + daily_salary + rec.bonus - rec.penalty
