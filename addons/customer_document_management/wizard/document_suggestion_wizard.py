@@ -13,27 +13,14 @@ class CustomerDocumentSuggestion(models.TransientModel):
     suggestion_ids = fields.One2many('customer.document.suggestion.line', 'wizard_id', string='Gợi ý')
 
     def action_suggest(self):
-        # Đường dẫn tuyệt đối tới thư mục ml_data trong module
-        module_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-        ml_data_dir = os.path.join(module_dir, 'ml_data')
-        model = SentenceTransformer(os.path.join(ml_data_dir, 'news_embedding_model'))
-        embeddings = joblib.load(os.path.join(ml_data_dir, 'news_embeddings.joblib'))
-        texts = joblib.load(os.path.join(ml_data_dir, 'news_texts.joblib'))
-        # Lấy toàn bộ văn bản của khách hàng này
+        # Lấy toàn bộ văn bản đã gắn với khách hàng này trong Odoo
         docs = self.customer_id.document_ids
-        doc_texts = [f"{d.name} {d.description or ''}" for d in docs]
-        if not doc_texts:
-            return
-        query_emb = model.encode([doc_texts[0]])
-        sims = cosine_similarity(query_emb, embeddings)[0]
-        top_idx = sims.argsort()[-self.top_k:][::-1]
-        # Xóa gợi ý cũ
         self.suggestion_ids.unlink()
-        for i in top_idx:
+        for d in docs:
             self.env['customer.document.suggestion.line'].create({
                 'wizard_id': self.id,
-                'text': texts[i],
-                'score': float(sims[i]),
+                'text': f"{d.name} {d.description or ''}",
+                'score': 1.0,  # Mặc định 1.0 vì không dùng AI
             })
 
 class CustomerDocumentSuggestionLine(models.TransientModel):
