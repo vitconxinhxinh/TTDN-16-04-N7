@@ -16,7 +16,7 @@ class CustomerDocumentSuggestion(models.TransientModel):
         # Đường dẫn tuyệt đối tới thư mục ml_data trong module
         module_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
         ml_data_dir = os.path.join(module_dir, 'ml_data')
-        model = joblib.load(os.path.join(ml_data_dir, 'news_embedding_model.joblib'))
+        model = SentenceTransformer(os.path.join(ml_data_dir, 'news_embedding_model'))
         embeddings = joblib.load(os.path.join(ml_data_dir, 'news_embeddings.joblib'))
         texts = joblib.load(os.path.join(ml_data_dir, 'news_texts.joblib'))
         # Lấy toàn bộ văn bản của khách hàng này
