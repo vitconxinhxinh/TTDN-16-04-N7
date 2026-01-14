@@ -88,7 +88,13 @@ class CustomerDocumentAPI(http.Controller):
         # Xác định mimetype
         mimetype, _ = mimetypes.guess_type(filename)
         if not mimetype:
-            mimetype = 'application/octet-stream'
+            # Nếu là ảnh hoặc pdf mà không đoán được, thử đoán theo đuôi file
+            if filename.lower().endswith(('.jpg', '.jpeg', '.png', '.gif', '.bmp', '.webp')):
+                mimetype = 'image/' + filename.split('.')[-1].lower()
+            elif filename.lower().endswith('.pdf'):
+                mimetype = 'application/pdf'
+            else:
+                mimetype = 'application/octet-stream'
         # Chỉ cho phép inline với file mà browser hỗ trợ
         inline_types = ['image/', 'application/pdf', 'text/', 'application/xhtml+xml', 'application/xml']
         if any(mimetype.startswith(t) for t in inline_types):
