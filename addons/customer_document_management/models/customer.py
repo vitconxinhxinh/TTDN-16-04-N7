@@ -5,12 +5,13 @@ class Customer(models.Model):
     _description = 'Customer'
 
     code = fields.Char(string='Mã KH', readonly=True, required=True, copy=False, store=True)
-        @api.model
-        def default_get(self, fields):
-            res = super().default_get(fields)
-            if 'code' in fields:
-                res['code'] = self.env['ir.sequence'].next_by_code('customer.document.customer')
-            return res
+
+    @api.model
+    def default_get(self, fields):
+        res = super().default_get(fields)
+        if 'code' in fields:
+            res['code'] = self.env['ir.sequence'].next_by_code('customer.document.customer')
+        return res
     name = fields.Char(string='Tên khách hàng', required=True)
     phone = fields.Char(string='Số điện thoại')
     email = fields.Char(string='Email')
