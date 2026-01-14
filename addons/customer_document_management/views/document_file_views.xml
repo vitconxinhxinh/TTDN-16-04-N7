@@ -23,6 +23,9 @@
                         <field name="upload_date"/>
                         <field name="document_id"/>
                     </group>
+                    <footer>
+                        <button name="download_file_action" type="object" string="Tải file về" class="btn-primary"/>
+                    </footer>
                 </sheet>
             </form>
         </field>
