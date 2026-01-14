@@ -16,15 +16,19 @@
         <field name="name">customer.document.document.form</field>
         <field name="model">customer.document.document</field>
         <field name="arch" type="xml">
-            <form>
+            <form string="Văn bản số hóa">
                 <sheet>
                     <group>
-                        <field name="name"/>
-                        <field name="document_type"/>
-                        <field name="issue_date"/>
-                        <field name="customer_id"/>
-                        <field name="file"/>
-                        <field name="description"/>
+                        <group>
+                            <field name="name"/>
+                            <field name="document_type"/>
+                            <field name="issue_date"/>
+                            <field name="customer_id"/>
+                        </group>
+                        <group>
+                            <field name="file"/>
+                            <field name="description"/>
+                        </group>
                     </group>
                 </sheet>
             </form>
