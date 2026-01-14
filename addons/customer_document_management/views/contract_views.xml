@@ -13,7 +13,7 @@
                     <field name="date_end"/>
                     <field name="value"/>
                     <field name="file"/>
-                    <field name="state" widget="statusbar"/>
+                    <field name="state"/>
                     <field name="customer_id"/>
                 </tree>
             </field>
@@ -41,8 +41,10 @@
                                         <field name="file"/>
                                     </group>
                                 </group>
-                                <field name="customer_id"/>
-                                <field name="create_date" readonly="1"/>
+                                <group>
+                                    <field name="customer_id"/>
+                                    <field name="create_date" readonly="1"/>
+                                </group>
                             </page>
                         </notebook>
                     </sheet>
