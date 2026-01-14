@@ -6,6 +6,7 @@
     'category': 'Tools',
     'depends': ['base'],
     'data': [
+        'security/ir.model.access.csv',
         'views/customer_views.xml',
         'views/document_views.xml',
         'views/menu.xml',
