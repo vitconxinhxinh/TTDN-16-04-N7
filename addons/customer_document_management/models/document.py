@@ -21,7 +21,7 @@ class Document(models.Model):
         ('active', 'Hiệu lực'),
         ('inactive', 'Hết hiệu lực')
     ], string='Trạng thái', default='active')
-    file = fields.Binary(string='File đính kèm')
+    file_ids = fields.One2many('customer.document.file', 'document_id', string='File đính kèm')
     description = fields.Text(string='Mô tả')
     customer_id = fields.Many2one('customer.document.customer', string='Khách hàng', required=True, ondelete='cascade')
 

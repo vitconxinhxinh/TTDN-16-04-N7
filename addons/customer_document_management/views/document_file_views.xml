@@ -1,0 +1,30 @@
+<odoo>
+    <record id="view_document_file_tree" model="ir.ui.view">
+        <field name="name">customer.document.file.tree</field>
+        <field name="model">customer.document.file</field>
+        <field name="arch" type="xml">
+            <tree>
+                <field name="name"/>
+                <field name="upload_user_id"/>
+                <field name="upload_date"/>
+            </tree>
+        </field>
+    </record>
+    <record id="view_document_file_form" model="ir.ui.view">
+        <field name="name">customer.document.file.form</field>
+        <field name="model">customer.document.file</field>
+        <field name="arch" type="xml">
+            <form string="Tệp đính kèm">
+                <sheet>
+                    <group>
+                        <field name="name"/>
+                        <field name="file"/>
+                        <field name="upload_user_id"/>
+                        <field name="upload_date"/>
+                        <field name="document_id"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+</odoo>

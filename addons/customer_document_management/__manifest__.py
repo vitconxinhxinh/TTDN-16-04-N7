@@ -14,6 +14,7 @@
         'data/document_demo.xml',
         'views/customer_views.xml',
         'views/document_views.xml',
+        'views/document_file_views.xml',
         'views/contract_views.xml',
         'views/menu.xml',
     ],
