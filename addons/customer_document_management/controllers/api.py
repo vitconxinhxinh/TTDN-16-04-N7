@@ -79,14 +79,25 @@ class CustomerDocumentAPI(http.Controller):
     @http.route('/api/document_file/view/<int:file_id>', type='http', auth='user', methods=['GET'])
     def view_document_file(self, file_id, **kwargs):
         """API xem file đính kèm trực tiếp trên trình duyệt theo ID."""
+        import mimetypes
         file_rec = request.env['customer.document.file'].sudo().browse(file_id)
         if not file_rec or not file_rec.file:
             return request.not_found()
         file_content = base64.b64decode(file_rec.file)
         filename = file_rec.name or f"file_{file_id}"
+        # Xác định mimetype
+        mimetype, _ = mimetypes.guess_type(filename)
+        if not mimetype:
+            mimetype = 'application/octet-stream'
+        # Chỉ cho phép inline với file mà browser hỗ trợ
+        inline_types = ['image/', 'application/pdf', 'text/', 'application/xhtml+xml', 'application/xml']
+        if any(mimetype.startswith(t) for t in inline_types):
+            disposition = f'inline; filename="{filename}"'
+        else:
+            disposition = f'attachment; filename="{filename}"'
         headers = [
-            ('Content-Type', 'application/octet-stream'),
-            ('Content-Disposition', f'inline; filename="{filename}"')
+            ('Content-Type', mimetype),
+            ('Content-Disposition', disposition)
         ]
         return request.make_response(file_content, headers)
 
