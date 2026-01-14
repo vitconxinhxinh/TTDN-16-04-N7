@@ -1,4 +1,4 @@
-from odoo import models, fields
+from odoo import models, fields, api
 
 class Customer(models.Model):
     _name = 'customer.document.customer'
