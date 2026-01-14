@@ -10,7 +10,7 @@
                 <field name="email"/>
                 <field name="group"/>
                 <field name="address"/>
-                <field name="state" widget="statusbar"/>
+                <field name="state"/>
                 <field name="create_date"/>
             </tree>
         </field>
