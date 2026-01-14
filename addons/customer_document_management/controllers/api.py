@@ -22,22 +22,39 @@ def get_sentence_model():
 class CustomerDocumentAPI(http.Controller):
     @http.route('/api/suggest_documents', type='json', auth='user', methods=['POST'])
     def suggest_documents(self, customer_id=None, query=None, top_k=5, **kwargs):
+        import logging
+        _logger = logging.getLogger(__name__)
+        _logger.info('--- [AI Suggest] customer_id: %s, query: %s, top_k: %s', customer_id, query, top_k)
         if not customer_id:
+            _logger.warning('customer_id is required')
             return {'error': 'customer_id is required'}
         docs = request.env['customer.document.document'].sudo().search([
             ('customer_id', '=', customer_id)
         ])
+        _logger.info('--- [AI Suggest] Found %d docs for customer_id=%s', len(docs), customer_id)
         doc_texts = [f"{d.name} {d.description or ''}" for d in docs]
-        model = get_sentence_model()
-        doc_embeddings = model.encode(doc_texts)
+        _logger.debug('--- [AI Suggest] doc_texts: %s', doc_texts)
+        try:
+            model = get_sentence_model()
+            doc_embeddings = model.encode(doc_texts)
+            _logger.debug('--- [AI Suggest] doc_embeddings shape: %s', str(np.array(doc_embeddings).shape))
+        except Exception as e:
+            _logger.error('--- [AI Suggest] Error loading model or encoding: %s', str(e))
+            return {'error': 'Model error: %s' % str(e)}
 
         # Nếu có truy vấn (query), tính similarity và gợi ý tài liệu liên quan nhất
         if query:
-            query_emb = model.encode([query])[0]
-            sims = cosine_similarity([query_emb], doc_embeddings)[0]
-            top_indices = np.argsort(sims)[::-1][:top_k]
-            suggested = [docs[i] for i in top_indices]
-            scores = [float(sims[i]) for i in top_indices]
+            try:
+                query_emb = model.encode([query])[0]
+                sims = cosine_similarity([query_emb], doc_embeddings)[0]
+                _logger.info('--- [AI Suggest] Similarity scores: %s', sims)
+                top_indices = np.argsort(sims)[::-1][:top_k]
+                suggested = [docs[i] for i in top_indices]
+                scores = [float(sims[i]) for i in top_indices]
+            except Exception as e:
+                _logger.error('--- [AI Suggest] Error in similarity calculation: %s', str(e))
+                suggested = []
+                scores = []
         else:
             suggested = docs
             scores = [1.0] * len(docs)
@@ -56,6 +73,7 @@ class CustomerDocumentAPI(http.Controller):
                 'similarity': scores[i] if i < len(scores) else None,
             } for i, d in enumerate(suggested)
         ]
+        _logger.info('--- [AI Suggest] Return %d suggested documents', len(data))
         return {'suggested_documents': data}
 
     @http.route('/api/document_file/download/<int:file_id>', type='http', auth='user', methods=['GET'])
