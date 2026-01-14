@@ -7,6 +7,8 @@
                 <field name="name"/>
                 <field name="upload_user_id"/>
                 <field name="upload_date"/>
+                <button name="action_view_file" type="object" icon="fa-eye" string="Xem trực tiếp"/>
+                <button name="download_file_action" type="object" icon="fa-download" string="Tải về"/>
             </tree>
         </field>
     </record>
