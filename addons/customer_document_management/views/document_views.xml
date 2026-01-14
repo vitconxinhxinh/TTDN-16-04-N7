@@ -4,9 +4,13 @@
         <field name="model">customer.document.document</field>
         <field name="arch" type="xml">
             <tree>
+                <field name="code"/>
                 <field name="name"/>
                 <field name="document_type"/>
                 <field name="issue_date"/>
+                <field name="end_date"/>
+                <field name="cost"/>
+                <field name="state"/>
                 <field name="customer_id"/>
             </tree>
         </field>
@@ -20,9 +24,13 @@
                 <sheet>
                     <group>
                         <group>
+                            <field name="code" readonly="1"/>
                             <field name="name"/>
                             <field name="document_type"/>
                             <field name="issue_date"/>
+                            <field name="end_date"/>
+                            <field name="cost"/>
+                            <field name="state"/>
                             <field name="customer_id"/>
                         </group>
                         <group>
