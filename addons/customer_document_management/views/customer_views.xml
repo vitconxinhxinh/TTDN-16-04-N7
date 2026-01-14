@@ -4,10 +4,14 @@
         <field name="model">customer.document.customer</field>
         <field name="arch" type="xml">
             <tree>
+                <field name="code"/>
                 <field name="name"/>
-                <field name="email"/>
                 <field name="phone"/>
+                <field name="email"/>
+                <field name="group"/>
                 <field name="address"/>
+                <field name="state" widget="statusbar"/>
+                <field name="create_date"/>
             </tree>
         </field>
     </record>
@@ -16,23 +20,35 @@
         <field name="name">customer.document.customer.form</field>
         <field name="model">customer.document.customer</field>
         <field name="arch" type="xml">
-            <form>
+            <form string="Khách hàng">
                 <sheet>
-                    <group>
-                        <field name="name"/>
-                        <field name="email"/>
-                        <field name="phone"/>
-                        <field name="address"/>
-                    </group>
-                    <group string="Văn bản số hóa">
-                        <field name="document_ids">
-                            <tree>
-                                <field name="name"/>
-                                <field name="document_type"/>
-                                <field name="issue_date"/>
-                            </tree>
-                        </field>
-                    </group>
+                    <notebook>
+                        <page string="Thông tin khách hàng">
+                            <group>
+                                <group>
+                                    <field name="code" readonly="1"/>
+                                    <field name="name"/>
+                                    <field name="phone"/>
+                                    <field name="state"/>
+                                </group>
+                                <group>
+                                    <field name="email"/>
+                                    <field name="group"/>
+                                    <field name="address"/>
+                                    <field name="create_date" readonly="1"/>
+                                </group>
+                            </group>
+                        </page>
+                        <page string="Thông tin hợp đồng">
+                            <field name="document_ids">
+                                <tree>
+                                    <field name="name"/>
+                                    <field name="document_type"/>
+                                    <field name="issue_date"/>
+                                </tree>
+                            </field>
+                        </page>
+                    </notebook>
                 </sheet>
             </form>
         </field>
