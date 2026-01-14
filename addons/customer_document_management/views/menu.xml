@@ -1,20 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
 <odoo>
-    <menuitem id="menu_customer_document_root" name="Quản lý khách hàng &amp; Văn bản" parent="" sequence="10" web_icon="base,static/description/icon.png"/>
-    <menuitem id="menu_customer" name="Khách hàng" parent="menu_customer_document_root" sequence="20"/>
-    <menuitem id="menu_document" name="Văn bản số hóa" parent="menu_customer_document_root" sequence="30"/>
+    <data>
+        <menuitem id="menu_customer_document_root" name="Quản lý khách hàng &amp; Văn bản" parent="" sequence="10" web_icon="base,static/description/icon.png"/>
+        <menuitem id="menu_customer" name="Khách hàng" parent="menu_customer_document_root" action="action_customer" sequence="20"/>
+        <menuitem id="menu_document" name="Văn bản số hóa" parent="menu_customer_document_root" action="action_document" sequence="30"/>
 
-    <record id="action_customer" model="ir.actions.act_window">
-        <field name="name">Khách hàng</field>
-        <field name="res_model">customer.document.customer</field>
-        <field name="view_mode">tree,form</field>
-    </record>
+        <record id="action_customer" model="ir.actions.act_window">
+            <field name="name">Khách hàng</field>
+            <field name="res_model">customer.document.customer</field>
+            <field name="view_mode">tree,form</field>
+        </record>
 
-    <record id="action_document" model="ir.actions.act_window">
-        <field name="name">Văn bản số hóa</field>
-        <field name="res_model">customer.document.document</field>
-        <field name="view_mode">tree,form</field>
-    </record>
-
-    <act_window id="open_customers" name="Khách hàng" res_model="customer.document.customer" view_mode="tree,form" target="current" menu_id="menu_customer"/>
-    <act_window id="open_documents" name="Văn bản số hóa" res_model="customer.document.document" view_mode="tree,form" target="current" menu_id="menu_document"/>
+        <record id="action_document" model="ir.actions.act_window">
+            <field name="name">Văn bản số hóa</field>
+            <field name="res_model">customer.document.document</field>
+            <field name="view_mode">tree,form</field>
+        </record>
+    </data>
 </odoo>
