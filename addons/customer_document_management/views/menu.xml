@@ -1,5 +1,5 @@
 <odoo>
-    <menuitem id="menu_customer_document_root" name="Quản lý khách hàng & Văn bản" sequence="10"/>
+    <menuitem id="menu_customer_document_root" name="Quản lý khách hàng &amp; Văn bản" sequence="10"/>
     <menuitem id="menu_customer" name="Khách hàng" parent="menu_customer_document_root" action="action_customer" sequence="20"/>
     <menuitem id="menu_document" name="Văn bản số hóa" parent="menu_customer_document_root" action="action_document" sequence="30"/>
 
