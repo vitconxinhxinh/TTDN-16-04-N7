@@ -76,9 +76,23 @@ class CustomerDocumentAPI(http.Controller):
         _logger.info('--- [AI Suggest] Return %d suggested documents', len(data))
         return {'suggested_documents': data}
 
+    @http.route('/api/document_file/view/<int:file_id>', type='http', auth='user', methods=['GET'])
+    def view_document_file(self, file_id, **kwargs):
+        """API xem file đính kèm trực tiếp trên trình duyệt theo ID."""
+        file_rec = request.env['customer.document.file'].sudo().browse(file_id)
+        if not file_rec or not file_rec.file:
+            return request.not_found()
+        file_content = base64.b64decode(file_rec.file)
+        filename = file_rec.name or f"file_{file_id}"
+        headers = [
+            ('Content-Type', 'application/octet-stream'),
+            ('Content-Disposition', f'inline; filename="{filename}"')
+        ]
+        return request.make_response(file_content, headers)
+
     @http.route('/api/document_file/download/<int:file_id>', type='http', auth='user', methods=['GET'])
     def download_document_file(self, file_id, **kwargs):
-        """API download file đính kèm theo ID."""
+        """API tải file đính kèm về máy theo ID."""
         file_rec = request.env['customer.document.file'].sudo().browse(file_id)
         if not file_rec or not file_rec.file:
             return request.not_found()

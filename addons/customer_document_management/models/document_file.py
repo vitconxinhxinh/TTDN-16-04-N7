@@ -1,6 +1,19 @@
 from odoo import models, fields
 
 class DocumentFile(models.Model):
+
+        def action_view_file(self):
+            """
+            Trả về action để xem file trực tiếp trên trình duyệt (inline).
+            """
+            self.ensure_one()
+            if not self.file:
+                return
+            return {
+                'type': 'ir.actions.act_url',
+                'url': f'/api/document_file/view/{self.id}',
+                'target': 'self',
+            }
     _name = 'customer.document.file'
     _description = 'Tệp đính kèm văn bản khách hàng'
 

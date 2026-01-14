@@ -24,6 +24,7 @@
                         <field name="document_id"/>
                     </group>
                     <footer>
+                        <button name="action_view_file" type="object" string="Xem trực tiếp" class="btn-secondary"/>
                         <button name="download_file_action" type="object" string="Tải file về" class="btn-primary"/>
                     </footer>
                 </sheet>
