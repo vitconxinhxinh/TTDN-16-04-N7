@@ -14,4 +14,4 @@ class Document(models.Model):
     issue_date = fields.Date(string='Ngày phát hành')
     file = fields.Binary(string='File đính kèm')
     description = fields.Text(string='Mô tả')
-    customer_id = fields.Many2one('customer.document.customer', string='Khách hàng', required=True)
+    customer_id = fields.Many2one('customer.document.customer', string='Khách hàng', required=True, ondelete='cascade')

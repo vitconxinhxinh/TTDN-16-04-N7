@@ -20,7 +20,7 @@ class Contract(models.Model):
         ('inactive', 'Ngừng HD')
     ], string='Trạng thái', default='active')
     file = fields.Binary(string='File đính kèm')
-    customer_id = fields.Many2one('customer.document.customer', string='Khách hàng', required=True)
+    customer_id = fields.Many2one('customer.document.customer', string='Khách hàng', required=True, ondelete='cascade')
     create_date = fields.Datetime(string='Ngày tạo', readonly=True)
 
     @api.model
