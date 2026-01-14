@@ -16,6 +16,7 @@
         'views/document_views.xml',
         'views/document_file_views.xml',
         'views/contract_views.xml',
+        'views/document_suggestion_wizard_views.xml',
         'views/menu.xml',
     ],
     'installable': True,
