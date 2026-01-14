@@ -10,6 +10,8 @@
         'data/sequence.xml',
         'data/sequence_contract.xml',
         'data/sequence_document.xml',
+        'data/customer_demo.xml',
+        'data/document_demo.xml',
         'views/customer_views.xml',
         'views/document_views.xml',
         'views/contract_views.xml',

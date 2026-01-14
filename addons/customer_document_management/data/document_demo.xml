@@ -1,0 +1,27 @@
+<odoo>
+    <data noupdate="1">
+        <!-- Dữ liệu mẫu văn bản -->
+        <record id="document_demo_1" model="customer.document.document">
+            <field name="code">VB0001</field>
+            <field name="name">Hợp đồng dịch vụ A</field>
+            <field name="document_type">contract</field>
+            <field name="issue_date">2025-01-01</field>
+            <field name="end_date">2026-01-01</field>
+            <field name="cost">10000000</field>
+            <field name="state">active</field>
+            <field name="customer_id" ref="customer_demo_1"/>
+            <field name="description">Hợp đồng cung cấp dịch vụ cho khách hàng Nguyễn Văn A.</field>
+        </record>
+        <record id="document_demo_2" model="customer.document.document">
+            <field name="code">VB0002</field>
+            <field name="name">Báo giá dịch vụ B</field>
+            <field name="document_type">quotation</field>
+            <field name="issue_date">2025-06-15</field>
+            <field name="end_date">2026-06-15</field>
+            <field name="cost">5000000</field>
+            <field name="state">active</field>
+            <field name="customer_id" ref="customer_demo_2"/>
+            <field name="description">Báo giá dịch vụ cho khách hàng Trần Thị B.</field>
+        </record>
+    </data>
+</odoo>

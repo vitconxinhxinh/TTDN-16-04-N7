@@ -9,6 +9,9 @@
                 <field name="phone"/>
                 <field name="email"/>
                 <field name="group"/>
+                <field name="province"/>
+                <field name="district"/>
+                <field name="ward"/>
                 <field name="address"/>
                 <field name="state"/>
                 <field name="create_date"/>
@@ -34,6 +37,9 @@
                                 <group>
                                     <field name="email"/>
                                     <field name="group"/>
+                                    <field name="province"/>
+                                    <field name="district"/>
+                                    <field name="ward"/>
                                     <field name="address"/>
                                     <field name="create_date" readonly="1"/>
                                 </group>

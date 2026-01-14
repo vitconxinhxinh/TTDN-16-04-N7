@@ -19,7 +19,10 @@ class Customer(models.Model):
         ('vip', 'VIP'),
         ('thuong', 'Thường')
     ], string='Nhóm KH')
-    address = fields.Char(string='Quê quán')
+    province = fields.Char(string='Tỉnh/Thành phố')
+    district = fields.Char(string='Quận/Huyện')
+    ward = fields.Char(string='Xã/Phường')
+    address = fields.Char(string='Địa chỉ cụ thể')
     state = fields.Selection([
         ('active', 'Hoạt động'),
         ('inactive', 'Ngừng HD')
