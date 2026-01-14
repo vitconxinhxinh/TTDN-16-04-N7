@@ -4,7 +4,13 @@ class Customer(models.Model):
     _name = 'customer.document.customer'
     _description = 'Customer'
 
-    code = fields.Char(string='Mã KH', readonly=True, required=True, copy=False, default="/", store=True)
+    code = fields.Char(string='Mã KH', readonly=True, required=True, copy=False, store=True)
+        @api.model
+        def default_get(self, fields):
+            res = super().default_get(fields)
+            if 'code' in fields:
+                res['code'] = self.env['ir.sequence'].next_by_code('customer.document.customer')
+            return res
     name = fields.Char(string='Tên khách hàng', required=True)
     phone = fields.Char(string='Số điện thoại')
     email = fields.Char(string='Email')
@@ -22,7 +28,7 @@ class Customer(models.Model):
 
     @api.model
     def create(self, vals):
-        if not vals.get('code') or vals.get('code') == "/":
+        if not vals.get('code'):
             vals['code'] = self.env['ir.sequence'].next_by_code('customer.document.customer')
         res = super().create(vals)
         return res
