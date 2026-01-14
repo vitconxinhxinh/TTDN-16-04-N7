@@ -1,10 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
     <data>
-        <menuitem id="menu_customer_document_root" name="Quản lý khách hàng &amp; Văn bản" sequence="10" web_icon="base,static/description/icon.png"/>
-        <menuitem id="menu_customer" name="Khách hàng" parent="menu_customer_document_root" sequence="20" action="action_customer"/>
-        <menuitem id="menu_document" name="Văn bản số hóa" parent="menu_customer_document_root" sequence="30" action="action_document"/>
-
         <record id="action_customer" model="ir.actions.act_window">
             <field name="name">Khách hàng</field>
             <field name="res_model">customer.document.customer</field>
@@ -16,5 +12,9 @@
             <field name="res_model">customer.document.document</field>
             <field name="view_mode">tree,form</field>
         </record>
+
+        <menuitem id="menu_customer_document_root" name="Quản lý khách hàng &amp; Văn bản" sequence="10" web_icon="base,static/description/icon.png"/>
+        <menuitem id="menu_customer" name="Khách hàng" parent="menu_customer_document_root" sequence="20" action="action_customer"/>
+        <menuitem id="menu_document" name="Văn bản số hóa" parent="menu_customer_document_root" sequence="30" action="action_document"/>
     </data>
 </odoo>
