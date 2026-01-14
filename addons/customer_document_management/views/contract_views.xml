@@ -12,9 +12,9 @@
                     <field name="date_start"/>
                     <field name="date_end"/>
                     <field name="value"/>
-                    <field name="file"/>
                     <field name="state"/>
                     <field name="customer_id"/>
+                    <field name="file"/>
                 </tree>
             </field>
         </record>
