@@ -1,0 +1,17 @@
+<odoo>
+    <menuitem id="menu_customer_document_root" name="Quản lý khách hàng & Văn bản" sequence="10"/>
+    <menuitem id="menu_customer" name="Khách hàng" parent="menu_customer_document_root" action="action_customer" sequence="20"/>
+    <menuitem id="menu_document" name="Văn bản số hóa" parent="menu_customer_document_root" action="action_document" sequence="30"/>
+
+    <record id="action_customer" model="ir.actions.act_window">
+        <field name="name">Khách hàng</field>
+        <field name="res_model">customer.document.customer</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+
+    <record id="action_document" model="ir.actions.act_window">
+        <field name="name">Văn bản số hóa</field>
+        <field name="res_model">customer.document.document</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+</odoo>
