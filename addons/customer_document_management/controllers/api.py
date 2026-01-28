@@ -70,6 +70,7 @@ class CustomerDocumentAPI(http.Controller):
             return request.not_found()
         file_content = base64.b64decode(file_rec.file)
         filename = file_rec.name or f"file_{file_id}"
+        
         # Xác định mimetype
         mimetype, _ = mimetypes.guess_type(filename)
         if not mimetype:
@@ -78,14 +79,27 @@ class CustomerDocumentAPI(http.Controller):
                 mimetype = 'image/' + filename.split('.')[-1].lower()
             elif filename.lower().endswith('.pdf'):
                 mimetype = 'application/pdf'
+            elif filename.lower().endswith(('.txt', '.csv', '.log')):
+                mimetype = 'text/plain'
             else:
                 mimetype = 'application/octet-stream'
-        # Chỉ cho phép inline với file mà browser hỗ trợ
-        inline_types = ['image/', 'application/pdf', 'text/', 'application/xhtml+xml', 'application/xml']
-        if any(mimetype.startswith(t) for t in inline_types):
+        
+        # Các file có thể xem trực tiếp trên browser
+        inline_types = ['image/', 'application/pdf']
+        
+        # File DOCX, Excel, Word không thể xem trực tiếp → tự động download
+        download_extensions = ('.docx', '.doc', '.xlsx', '.xls', '.pptx', '.ppt')
+        if filename.lower().endswith(download_extensions):
+            disposition = f'attachment; filename="{filename}"'
+        elif any(mimetype.startswith(t) for t in inline_types):
             disposition = f'inline; filename="{filename}"'
+        elif mimetype.startswith('text/'):
+            # Text file: inline với charset UTF-8
+            disposition = f'inline; filename="{filename}"'
+            mimetype = 'text/plain; charset=utf-8'
         else:
             disposition = f'attachment; filename="{filename}"'
+        
         headers = [
             ('Content-Type', mimetype),
             ('Content-Disposition', disposition)

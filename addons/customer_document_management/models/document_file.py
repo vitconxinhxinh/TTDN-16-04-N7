@@ -23,58 +23,115 @@ class DocumentFile(models.Model):
     document_type_manual = fields.Char(string='Loại văn bản (Tùy chỉnh)', copy=False)
 
     def _extract_text_from_file(self):
-        """Trích xuất text từ file (PDF, DOCX, TXT, v.v.)"""
+        """Trích xuất text từ file - convert mọi định dạng thành text"""
         import base64
         import io
+        import tempfile
+        import os
         
         if not self.file:
             return ""
         
         try:
-            # Decode file từ binary
             file_content = base64.b64decode(self.file)
             filename = (self.name or "").lower()
+            text = ""
             
-            # Xử lý PDF
-            if filename.endswith('.pdf'):
-                try:
-                    import pdfplumber
-                    with pdfplumber.open(io.BytesIO(file_content)) as pdf:
-                        text = ""
-                        for page in pdf.pages[:5]:  # Chỉ lấy 5 trang đầu để nhanh
-                            text += page.extract_text() or ""
-                        return text[:2000]  # Giới hạn 2000 ký tự
-                except:
-                    pass
+            # Lưu file tạm để xử lý
+            with tempfile.NamedTemporaryFile(delete=False, suffix=os.path.splitext(filename)[1]) as tmp_file:
+                tmp_file.write(file_content)
+                tmp_file.flush()
+                tmp_path = tmp_file.name
             
-            # Xử lý DOCX
-            elif filename.endswith('.docx'):
-                try:
-                    from docx import Document
-                    doc = Document(io.BytesIO(file_content))
-                    text = "\n".join([para.text for para in doc.paragraphs[:100]])
-                    return text[:2000]
-                except:
-                    pass
-            
-            # Xử lý TXT, CSV
-            elif filename.endswith(('.txt', '.csv')):
-                try:
-                    text = file_content.decode('utf-8')
-                    return text[:2000]
-                except:
+            try:
+                # ========== PDF ==========
+                if filename.endswith('.pdf'):
+                    # Thử pdfplumber trước
                     try:
-                        text = file_content.decode('utf-16')
-                        return text[:2000]
+                        import pdfplumber
+                        with pdfplumber.open(tmp_path) as pdf:
+                            for page in pdf.pages[:10]:
+                                page_text = page.extract_text()
+                                if page_text:
+                                    text += page_text + "\n"
                     except:
                         pass
+                    
+                    # Nếu không có text, thử PyPDF2
+                    if not text.strip():
+                        try:
+                            import PyPDF2
+                            with open(tmp_path, 'rb') as f:
+                                pdf_reader = PyPDF2.PdfReader(f)
+                                for page in pdf_reader.pages[:10]:
+                                    text += page.extract_text() + "\n"
+                        except:
+                            pass
+                
+                # ========== DOCX ==========
+                elif filename.endswith('.docx'):
+                    try:
+                        from docx import Document
+                        doc = Document(tmp_path)
+                        text = "\n".join([para.text for para in doc.paragraphs])
+                    except:
+                        pass
+                
+                # ========== DOC (cũ) ==========
+                elif filename.endswith('.doc'):
+                    # Thử antiword
+                    try:
+                        import subprocess
+                        result = subprocess.run(['antiword', tmp_path], 
+                                              capture_output=True, text=True, timeout=10)
+                        if result.returncode == 0:
+                            text = result.stdout
+                    except:
+                        pass
+                    
+                    # Nếu không có antiword, thử catdoc
+                    if not text.strip():
+                        try:
+                            import subprocess
+                            result = subprocess.run(['catdoc', tmp_path], 
+                                                  capture_output=True, text=True, timeout=10)
+                            if result.returncode == 0:
+                                text = result.stdout
+                        except:
+                            pass
+                
+                # ========== TXT, CSV, LOG ==========
+                elif filename.endswith(('.txt', '.csv', '.log')):
+                    encodings = ['utf-8', 'utf-16', 'latin-1', 'cp1252', 'iso-8859-1']
+                    for encoding in encodings:
+                        try:
+                            with open(tmp_path, 'r', encoding=encoding) as f:
+                                text = f.read()
+                                break
+                        except:
+                            continue
+                
+                # ========== Fallback: Thử đọc như text ==========
+                if not text.strip():
+                    encodings = ['utf-8', 'latin-1', 'cp1252']
+                    for encoding in encodings:
+                        try:
+                            with open(tmp_path, 'r', encoding=encoding, errors='ignore') as f:
+                                text = f.read()
+                                if text.strip():
+                                    break
+                        except:
+                            continue
             
-            # Fallback: thử decode UTF-8
-            try:
-                text = file_content.decode('utf-8')
-                return text[:2000]
-            except:
-                return ""
+            finally:
+                # Xóa file tạm
+                try:
+                    os.unlink(tmp_path)
+                except:
+                    pass
+            
+            # Giới hạn độ dài text
+            return text[:5000] if text else ""
                 
         except Exception as e:
             return ""
