@@ -60,13 +60,15 @@ class DocumentFile(models.Model):
         import subprocess
         import os
         script_path = os.path.join(os.path.dirname(__file__), '..', 'controllers', 'predict.py')
+        valid_labels = ['labor_contract', 'sales_contract', 'service_contract', 
+                        'lease_contract', 'nda_contract', 'quotation', 'legal', 'other']
         try:
             result = subprocess.run([
                 'python3', script_path, text
             ], capture_output=True, text=True, check=True, timeout=5)
             label = result.stdout.strip()
             # Map nhãn trả về sang selection
-            if label in dict(cls._fields['suggested_document_type'].selection):
+            if label in valid_labels:
                 return label
         except Exception:
             pass
