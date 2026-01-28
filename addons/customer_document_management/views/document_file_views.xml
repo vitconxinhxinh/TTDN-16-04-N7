@@ -1,4 +1,26 @@
 <odoo>
+    <record id="view_document_file_search" model="ir.ui.view">
+        <field name="name">customer.document.file.search</field>
+        <field name="model">customer.document.file</field>
+        <field name="arch" type="xml">
+            <search string="Tìm kiếm file">
+                <field name="name" string="Tên file" filter_domain="[('name','ilike',self)]"/>
+                <field name="document_id" string="Văn bản"/>
+                <field name="document_type" string="Loại văn bản"/>
+                <field name="document_type_manual" string="Loại văn bản (Tùy chỉnh)" filter_domain="[('document_type_manual','ilike',self)]"/>
+                <field name="upload_user_id" string="Người upload"/>
+                <filter string="Hợp đồng lao động" name="type_labor" domain="[('document_type','=','labor_contract')]"/>
+                <filter string="Hợp đồng mua bán" name="type_sales" domain="[('document_type','=','sales_contract')]"/>
+                <filter string="Hợp đồng dịch vụ" name="type_service" domain="[('document_type','=','service_contract')]"/>
+                <group expand="0" string="Nhóm theo">
+                    <filter string="Loại văn bản" name="group_type" context="{'group_by':'document_type'}"/>
+                    <filter string="Người upload" name="group_user" context="{'group_by':'upload_user_id'}"/>
+                    <filter string="Ngày upload" name="group_date" context="{'group_by':'upload_date'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
     <record id="view_document_file_tree" model="ir.ui.view">
         <field name="name">customer.document.file.tree</field>
         <field name="model">customer.document.file</field>

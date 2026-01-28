@@ -1,4 +1,28 @@
 <odoo>
+    <record id="view_customer_search" model="ir.ui.view">
+        <field name="name">customer.document.customer.search</field>
+        <field name="model">customer.document.customer</field>
+        <field name="arch" type="xml">
+            <search string="Tìm kiếm khách hàng">
+                <field name="code" string="Mã khách hàng" filter_domain="[('code','ilike',self)]"/>
+                <field name="name" string="Tên khách hàng" filter_domain="[('name','ilike',self)]"/>
+                <field name="phone" string="Điện thoại" filter_domain="[('phone','ilike',self)]"/>
+                <field name="email" string="Email" filter_domain="[('email','ilike',self)]"/>
+                <field name="address" string="Địa chỉ" filter_domain="[('address','ilike',self)]"/>
+                <field name="province" string="Tỉnh/Thành phố"/>
+                <field name="district" string="Quận/Huyện"/>
+                <field name="group" string="Nhóm"/>
+                <filter string="Đang hoạt động" name="state_active" domain="[('state','=','active')]"/>
+                <filter string="Ngừng hoạt động" name="state_inactive" domain="[('state','=','inactive')]"/>
+                <group expand="0" string="Nhóm theo">
+                    <filter string="Nhóm khách hàng" name="group_by_group" context="{'group_by':'group'}"/>
+                    <filter string="Tỉnh/Thành phố" name="group_by_province" context="{'group_by':'province'}"/>
+                    <filter string="Trạng thái" name="group_by_state" context="{'group_by':'state'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
     <record id="view_customer_tree" model="ir.ui.view">
         <field name="name">customer.document.customer.tree</field>
         <field name="model">customer.document.customer</field>

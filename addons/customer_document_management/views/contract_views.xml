@@ -1,6 +1,26 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
     <data>
+        <record id="view_contract_search" model="ir.ui.view">
+            <field name="name">customer.document.contract.search</field>
+            <field name="model">customer.document.contract</field>
+            <field name="arch" type="xml">
+                <search string="Tìm kiếm hợp đồng">
+                    <field name="code" string="Mã hợp đồng" filter_domain="[('code','ilike',self)]"/>
+                    <field name="name" string="Tên hợp đồng" filter_domain="[('name','ilike',self)]"/>
+                    <field name="customer_id" string="Khách hàng"/>
+                    <field name="contract_type" string="Loại hợp đồng"/>
+                    <filter string="Hiệu lực" name="state_active" domain="[('state','=','active')]"/>
+                    <filter string="Hết hiệu lực" name="state_expired" domain="[('state','=','expired')]"/>
+                    <group expand="0" string="Nhóm theo">
+                        <filter string="Khách hàng" name="group_customer" context="{'group_by':'customer_id'}"/>
+                        <filter string="Loại hợp đồng" name="group_type" context="{'group_by':'contract_type'}"/>
+                        <filter string="Trạng thái" name="group_state" context="{'group_by':'state'}"/>
+                    </group>
+                </search>
+            </field>
+        </record>
+
         <record id="view_contract_tree" model="ir.ui.view">
             <field name="name">customer.document.contract.tree</field>
             <field name="model">customer.document.contract</field>

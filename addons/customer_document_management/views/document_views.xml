@@ -1,4 +1,24 @@
 <odoo>
+    <record id="view_document_search" model="ir.ui.view">
+        <field name="name">customer.document.document.search</field>
+        <field name="model">customer.document.document</field>
+        <field name="arch" type="xml">
+            <search string="Tìm kiếm văn bản">
+                <field name="code" string="Mã văn bản" filter_domain="[('code','ilike',self)]"/>
+                <field name="name" string="Tên văn bản" filter_domain="[('name','ilike',self)]"/>
+                <field name="customer_id" string="Khách hàng"/>
+                <field name="description" string="Mô tả" filter_domain="[('description','ilike',self)]"/>
+                <filter string="Hiệu lực" name="state_active" domain="[('state','=','active')]"/>
+                <filter string="Hết hiệu lực" name="state_expired" domain="[('state','=','expired')]"/>
+                <group expand="0" string="Nhóm theo">
+                    <filter string="Khách hàng" name="group_customer" context="{'group_by':'customer_id'}"/>
+                    <filter string="Trạng thái" name="group_state" context="{'group_by':'state'}"/>
+                    <filter string="Ngày phát hành" name="group_issue_date" context="{'group_by':'issue_date'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
     <record id="view_document_tree" model="ir.ui.view">
         <field name="name">customer.document.document.tree</field>
         <field name="model">customer.document.document</field>
