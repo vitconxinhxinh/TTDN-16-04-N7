@@ -37,3 +37,38 @@ class Document(models.Model):
         if not vals.get('code'):
             vals['code'] = self.env['ir.sequence'].next_by_code('customer.document.document')
         return super().create(vals)
+
+    def action_suggest_label(self):
+        """Gọi AI để gợi ý nhãn cho tài liệu này dựa trên tên văn bản."""
+        self.ensure_one()
+        label = self._suggest_label_from_ai(self.name or '')
+        if label:
+            self.document_type = label
+        return {
+            'type': 'ir.actions.client',
+            'tag': 'display_notification',
+            'params': {
+                'title': 'AI gợi ý',
+                'message': f'Nhãn gợi ý: {dict(self._fields["document_type"].selection).get(label, "Không xác định")}' if label else 'Không gợi ý được nhãn!',
+                'sticky': False,
+                'type': 'success' if label else 'warning',
+            }
+        }
+
+    @classmethod
+    def _suggest_label_from_ai(cls, text):
+        """Gọi API classify_text để lấy nhãn gợi ý."""
+        import subprocess
+        import os
+        script_path = os.path.join(os.path.dirname(__file__), '..', 'controllers', 'predict.py')
+        try:
+            result = subprocess.run([
+                'python3', script_path, text
+            ], capture_output=True, text=True, check=True, timeout=5)
+            label = result.stdout.strip()
+            # Kiểm tra xem label có trong selection không
+            if label in dict(cls._fields['document_type'].selection):
+                return label
+        except Exception:
+            pass
+        return None

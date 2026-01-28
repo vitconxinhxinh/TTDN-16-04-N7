@@ -19,6 +19,7 @@ class DocumentFile(models.Model):
 
     def action_suggest_label(self):
         """Gọi AI để gợi ý nhãn cho file này và cập nhật trường suggested_document_type."""
+        self.ensure_one()
         label = self._suggest_label_from_ai(self.name or '')
         if label:
             self.suggested_document_type = label
@@ -29,26 +30,26 @@ class DocumentFile(models.Model):
             'tag': 'display_notification',
             'params': {
                 'title': 'AI gợi ý',
-                'message': f'Nhãn gợi ý: {label}' if label else 'Không gợi ý được nhãn!',
+                'message': f'Nhãn gợi ý: {dict(self._fields["suggested_document_type"].selection).get(label, "Không xác định")}' if label else 'Không gợi ý được nhãn!',
                 'sticky': False,
+                'type': 'success' if label else 'warning',
             }
         }
 
     @classmethod
     def _suggest_label_from_ai(cls, text):
-        import requests
-        from odoo.tools import config
-        # Lấy base url từ config
-        base_url = config.get('web.base.url', 'http://localhost:8069')
-        url = f"{base_url}/api/classify_text"
+        """Gọi script predict.py để phân loại văn bản."""
+        import subprocess
+        import os
+        script_path = os.path.join(os.path.dirname(__file__), '..', 'controllers', 'predict.py')
         try:
-            resp = requests.post(url, json={"text": text}, auth=('admin', 'admin'))
-            if resp.status_code == 200:
-                data = resp.json()
-                label = data.get('label')
-                # Map nhãn trả về sang selection
-                if label in dict(cls._fields['suggested_document_type'].selection):
-                    return label
+            result = subprocess.run([
+                'python3', script_path, text
+            ], capture_output=True, text=True, check=True, timeout=5)
+            label = result.stdout.strip()
+            # Map nhãn trả về sang selection
+            if label in dict(cls._fields['suggested_document_type'].selection):
+                return label
         except Exception:
             pass
         return None

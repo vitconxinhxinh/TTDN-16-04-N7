@@ -1,4 +1,5 @@
 import subprocess
+import joblib
 
 from odoo import http
 from odoo.http import request, Response
@@ -12,18 +13,51 @@ class CustomerDocumentAPI(http.Controller):
 
     @http.route('/api/classify_text', type='json', auth='user', methods=['POST'])
     def classify_text(self, text=None, **kwargs):
-        """API nhận văn bản và trả về nhãn phân loại từ model AI mới."""
+        """API nhận văn bản và trả về nhãn phân loại từ model AI."""
         if not text:
             return {'error': 'Missing text'}
-        script_path = os.path.join(os.path.dirname(__file__), 'predict.py')
+        
+        import joblib
+        script_dir = os.path.dirname(__file__)
+        model_file = os.path.join(script_dir, 'model.pkl')
+        vectorizer_file = os.path.join(script_dir, 'vectorizer.pkl')
+        
+        # Map từ nhãn model sang nhãn Odoo
+        label_map = {
+            'labor_contract': 'contract',
+            'lease_contract': 'contract',
+            'sales_contract': 'contract',
+            'service_contract': 'contract',
+            'nda_contract': 'legal',
+        }
+        
         try:
-            result = subprocess.run([
-                'python3', script_path, text
-            ], capture_output=True, text=True, check=True)
-            label = result.stdout.strip()
-            return {'label': label}
+            # Load model và vectorizer
+            model = joblib.load(model_file)
+            vectorizer = joblib.load(vectorizer_file)
+            
+            # Vectorize và predict
+            text_vectorized = vectorizer.transform([text])
+            decision_scores = model.decision_function(text_vectorized)[0]
+            
+            # Softmax để lấy xác suất
+            e_x = np.exp(decision_scores - np.max(decision_scores))
+            probs = e_x / e_x.sum()
+            
+            best_idx = np.argmax(probs)
+            predicted_label = model.classes_[best_idx]
+            confidence = float(probs[best_idx])
+            
+            # Map sang nhãn Odoo
+            odoo_label = label_map.get(predicted_label, 'other')
+            
+            return {
+                'label': odoo_label,
+                'original_label': predicted_label,
+                'confidence': confidence
+            }
         except Exception as e:
-            return {'error': str(e)}
+            return {'error': str(e), 'label': 'other'}
 
     # ...existing code...
 
