@@ -28,6 +28,7 @@
                         <field name="suggested_document_type" readonly="1"/>
                     </group>
                     <footer>
+                        <button name="action_suggest_label" type="object" string="Gợi ý nhãn AI" class="btn-info"/>
                         <button name="action_view_file" type="object" string="Xem trực tiếp" class="btn-secondary"/>
                         <button name="download_file_action" type="object" string="Tải file về" class="btn-primary"/>
                     </footer>

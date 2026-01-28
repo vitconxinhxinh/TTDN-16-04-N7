@@ -1,3 +1,19 @@
+    def action_suggest_label(self):
+        """Gọi AI để gợi ý nhãn cho file này và cập nhật trường suggested_document_type."""
+        label = self._suggest_label_from_ai(self.name or '')
+        if label:
+            self.suggested_document_type = label
+        else:
+            self.suggested_document_type = False
+        return {
+            'type': 'ir.actions.client',
+            'tag': 'display_notification',
+            'params': {
+                'title': 'AI gợi ý',
+                'message': f'Nhãn gợi ý: {label}' if label else 'Không gợi ý được nhãn!',
+                'sticky': False,
+            }
+        }
 from odoo import models, fields, api
 
 
