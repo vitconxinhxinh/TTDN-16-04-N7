@@ -15,8 +15,6 @@ class AISuggestionWizard(models.TransientModel):
         ('legal', 'Tài liệu pháp lý'),
         ('other', 'Khác')
     ], string='Loại văn bản gợi ý')
-    confidence = fields.Float(string='Độ tin cậy (%)')
-    file_text = fields.Text(string='Nội dung file', readonly=True)
 
     def action_suggest(self):
         """Gọi AI để gợi ý loại văn bản (dùng tên file)."""
@@ -47,32 +45,19 @@ class AISuggestionWizard(models.TransientModel):
             
             output = result.stdout.strip()
             
-            # Debug: log output
-            import sys
-            print(f"[DEBUG] predict.py output: {output}", file=sys.stderr)
-            print(f"[DEBUG] text length: {len(text)}", file=sys.stderr)
-            
             # Parse JSON response
             try:
                 data = json.loads(output)
                 label = data.get('label', 'other')
-                confidence = data.get('confidence', 0)
-                print(f"[DEBUG] Parsed label: {label}, confidence: {confidence}", file=sys.stderr)
-            except json.JSONDecodeError as e:
-                print(f"[DEBUG] JSON parse error: {e}", file=sys.stderr)
+            except json.JSONDecodeError:
                 label = output if output in ['labor_contract', 'sales_contract', 'service_contract', 
                                              'lease_contract', 'nda_contract', 'quotation', 'legal', 'other'] else 'other'
-                confidence = 0
             
             # Cập nhật wizard
             self.suggested_type = label
-            self.confidence = confidence
             
         except Exception as e:
-            import traceback
-            print(f"[DEBUG] Exception: {traceback.format_exc()}", file=sys.stderr)
             self.suggested_type = 'other'
-            self.confidence = 0
 
     def action_confirm(self):
         """Xác nhận và lưu loại văn bản vào file."""
