@@ -11,7 +11,12 @@ class DocumentFile(models.Model):
     upload_date = fields.Datetime(string='Ngày upload', default=fields.Datetime.now)
     download_url = fields.Char(string='Tải về', compute='_compute_download_url', store=False)
     suggested_document_type = fields.Selection([
-        ('contract', 'Hợp đồng'),
+        ('labor_contract', 'Hợp đồng lao động'),
+        ('sales_contract', 'Hợp đồng mua bán'),
+        ('service_contract', 'Hợp đồng dịch vụ'),
+        ('lease_contract', 'Hợp đồng thuê'),
+        ('nda_contract', 'Hợp đồng bảo mật'),
+        ('contract', 'Hợp đồng (chung)'),
         ('quotation', 'Báo giá'),
         ('legal', 'Tài liệu pháp lý'),
         ('other', 'Khác')

@@ -9,7 +9,12 @@ class Document(models.Model):
 
     name = fields.Char(string='Tên văn bản', required=True)
     document_type = fields.Selection([
-        ('contract', 'Hợp đồng'),
+        ('labor_contract', 'Hợp đồng lao động'),
+        ('sales_contract', 'Hợp đồng mua bán'),
+        ('service_contract', 'Hợp đồng dịch vụ'),
+        ('lease_contract', 'Hợp đồng thuê'),
+        ('nda_contract', 'Hợp đồng bảo mật'),
+        ('contract', 'Hợp đồng (chung)'),
         ('quotation', 'Báo giá'),
         ('legal', 'Tài liệu pháp lý'),
         ('other', 'Khác')

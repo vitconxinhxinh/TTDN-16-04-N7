@@ -10,11 +10,11 @@ VECTORIZER_FILE = os.path.join(SCRIPT_DIR, "vectorizer.pkl")
 
 # Map từ nhãn model sang nhãn Odoo
 LABEL_MAP = {
-    'labor_contract': 'contract',
-    'lease_contract': 'contract',
-    'sales_contract': 'contract',
-    'service_contract': 'contract',
-    'nda_contract': 'legal',
+    'labor_contract': 'labor_contract',
+    'lease_contract': 'lease_contract',
+    'sales_contract': 'sales_contract',
+    'service_contract': 'service_contract',
+    'nda_contract': 'nda_contract',
 }
 
 
