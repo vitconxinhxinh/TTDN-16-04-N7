@@ -11,6 +11,38 @@ class DocumentFile(models.Model):
     upload_user_id = fields.Many2one('res.users', string='Người upload', default=lambda self: self.env.uid)
     upload_date = fields.Datetime(string='Ngày upload', default=fields.Datetime.now)
     download_url = fields.Char(string='Tải về', compute='_compute_download_url', store=False)
+    suggested_document_type = fields.Selection([
+        ('contract', 'Hợp đồng'),
+        ('quotation', 'Báo giá'),
+        ('legal', 'Tài liệu pháp lý'),
+        ('other', 'Khác')
+    ], string='Nhãn gợi ý', readonly=True, copy=False)
+    @classmethod
+    def _suggest_label_from_ai(cls, text):
+        import requests
+        from odoo.tools import config
+        # Lấy base url từ config
+        base_url = config.get('web.base.url', 'http://localhost:8069')
+        url = f"{base_url}/api/classify_text"
+        try:
+            resp = requests.post(url, json={"text": text}, auth=('admin', 'admin'))
+            if resp.status_code == 200:
+                data = resp.json()
+                label = data.get('label')
+                # Map nhãn trả về sang selection
+                if label in dict(cls._fields['suggested_document_type'].selection):
+                    return label
+        except Exception:
+            pass
+        return None
+    @api.model
+    def create(self, vals):
+        # Gợi ý nhãn khi upload file dựa trên tên file
+        if not vals.get('suggested_document_type') and vals.get('name'):
+            label = self._suggest_label_from_ai(vals['name'])
+            if label:
+                vals['suggested_document_type'] = label
+        return super().create(vals)
 
     def action_view_file(self):
         """

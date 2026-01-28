@@ -24,6 +24,7 @@
                         <field name="upload_user_id"/>
                         <field name="upload_date"/>
                         <field name="document_id"/>
+                        <field name="suggested_document_type" readonly="1"/>
                     </group>
                     <footer>
                         <button name="action_view_file" type="object" string="Xem trực tiếp" class="btn-secondary"/>
