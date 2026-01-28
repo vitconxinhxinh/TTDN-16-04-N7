@@ -34,10 +34,10 @@
                         <group>
                             <field name="file_ids">
                                 <tree editable="bottom">
-                                    <field name="name"/>
+                                    <field name="name" invisible="1"/>
                                     <field name="document_type"/>
                                     <field name="suggested_document_type" readonly="1"/>
-                                    <field name="file"/>
+                                    <field name="file" filename="name"/>
                                     <field name="upload_user_id"/>
                                     <field name="upload_date"/>
                                     <button name="action_view_file" type="object" icon="fa-eye" attrs="{'invisible': [('id', '=', False)]}" string=""/>
@@ -45,9 +45,9 @@
                                 </tree>
                                 <form string="Tệp đính kèm">
                                     <group>
-                                        <field name="name"/>
+                                        <field name="name" invisible="1"/>
                                         <field name="document_type"/>
-                                        <field name="file"/>
+                                        <field name="file" filename="name"/>
                                         <field name="upload_user_id"/>
                                         <field name="upload_date"/>
                                         <field name="document_id"/>

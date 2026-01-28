@@ -70,15 +70,16 @@ class DocumentFile(models.Model):
     @api.model
     def create(self, vals):
         # Gợi ý nhãn khi upload file dựa trên tên file
-        if vals.get('name'):
-            label = self._suggest_label_from_ai(vals['name'])
+        rec = super().create(vals)
+        # Gọi AI sau khi tạo record để đảm bảo có name
+        if rec.name and not rec.suggested_document_type:
+            label = self._suggest_label_from_ai(rec.name)
             if label:
-                if not vals.get('suggested_document_type'):
-                    vals['suggested_document_type'] = label
+                rec.suggested_document_type = label
                 # Tự động set document_type từ AI nếu chưa có
-                if not vals.get('document_type'):
-                    vals['document_type'] = label
-        return super().create(vals)
+                if not rec.document_type:
+                    rec.document_type = label
+        return rec
 
     def action_view_file(self):
         """
