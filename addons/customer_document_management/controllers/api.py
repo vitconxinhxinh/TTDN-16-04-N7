@@ -71,10 +71,37 @@ class CustomerDocumentAPI(http.Controller):
         file_content = base64.b64decode(file_rec.file)
         filename = file_rec.name or f"file_{file_id}"
         
+        # ========== XỬ LÝ DOCX: Convert sang HTML để xem ==========
+        if filename.lower().endswith('.docx'):
+            try:
+                from docx import Document
+                import io
+                doc = Document(io.BytesIO(file_content))
+                
+                # Convert sang HTML
+                html = "<html><head><meta charset='utf-8'><style>"
+                html += "body { font-family: Arial, sans-serif; margin: 20px; line-height: 1.6; }"
+                html += "p { margin: 10px 0; }"
+                html += "</style></head><body>"
+                html += f"<h2>{filename}</h2><hr>"
+                
+                for para in doc.paragraphs:
+                    if para.text.strip():
+                        html += f"<p>{para.text}</p>"
+                
+                html += "</body></html>"
+                
+                headers = [
+                    ('Content-Type', 'text/html; charset=utf-8'),
+                ]
+                return request.make_response(html.encode('utf-8'), headers)
+            except:
+                # Fallback: download nếu convert lỗi
+                pass
+        
         # Xác định mimetype
         mimetype, _ = mimetypes.guess_type(filename)
         if not mimetype:
-            # Nếu là ảnh hoặc pdf mà không đoán được, thử đoán theo đuôi file
             if filename.lower().endswith(('.jpg', '.jpeg', '.png', '.gif', '.bmp', '.webp')):
                 mimetype = 'image/' + filename.split('.')[-1].lower()
             elif filename.lower().endswith('.pdf'):
@@ -87,8 +114,8 @@ class CustomerDocumentAPI(http.Controller):
         # Các file có thể xem trực tiếp trên browser
         inline_types = ['image/', 'application/pdf']
         
-        # File DOCX, Excel, Word không thể xem trực tiếp → tự động download
-        download_extensions = ('.docx', '.doc', '.xlsx', '.xls', '.pptx', '.ppt')
+        # File DOC, Excel, PowerPoint không thể xem trực tiếp → tự động download
+        download_extensions = ('.doc', '.xlsx', '.xls', '.pptx', '.ppt')
         if filename.lower().endswith(download_extensions):
             disposition = f'attachment; filename="{filename}"'
         elif any(mimetype.startswith(t) for t in inline_types):
