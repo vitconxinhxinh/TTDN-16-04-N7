@@ -13,6 +13,7 @@
         'data/customer_demo.xml',
         'data/document_demo.xml',
         'views/document_suggestion_wizard_views.xml',
+        'views/ai_suggestion_wizard_views.xml',
         'views/customer_views.xml',
         'views/document_views.xml',
         'views/document_file_views.xml',
