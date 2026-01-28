@@ -5,6 +5,7 @@
         <field name="arch" type="xml">
             <tree>
                 <field name="name"/>
+                <field name="suggested_document_type"/>
                 <field name="upload_user_id"/>
                 <field name="upload_date"/>
                 <button name="action_view_file" type="object" icon="fa-eye" string="Xem trực tiếp"/>
