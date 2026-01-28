@@ -123,7 +123,6 @@ class CustomerDocumentAPI(http.Controller):
                 'id': d.id,
                 'code': d.code,
                 'name': d.name,
-                'document_type': d.document_type,
                 'issue_date': d.issue_date,
                 'end_date': d.end_date,
                 'cost': d.cost,

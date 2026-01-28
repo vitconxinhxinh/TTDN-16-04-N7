@@ -4,7 +4,6 @@
         <record id="document_demo_1" model="customer.document.document">
             <field name="code">VB0001</field>
             <field name="name">Hợp đồng dịch vụ A</field>
-            <field name="document_type">contract</field>
             <field name="issue_date">2025-01-01</field>
             <field name="end_date">2026-01-01</field>
             <field name="cost">10000000</field>
@@ -15,7 +14,6 @@
         <record id="document_demo_2" model="customer.document.document">
             <field name="code">VB0002</field>
             <field name="name">Báo giá dịch vụ B</field>
-            <field name="document_type">quotation</field>
             <field name="issue_date">2025-06-15</field>
             <field name="end_date">2026-06-15</field>
             <field name="cost">5000000</field>
