@@ -85,32 +85,53 @@ Quản lý tài liệu và văn bản tự động phân loại:
 
 ## 📸 3. Hình ảnh giao diện hệ thống
 
-### Dashboard Nhân sự
+### Module nhân sự
 <p align="center">
-  <img src="docs/nhan_su.png" alt="Dashboard Nhân sự" width="800"/>
+  <img src="docs/dashnhansu.png" alt="" width="800"/>
   <br/>
-  <em>Dashboard Nhân sự</em>
+  <em>Dashboard nhân sự</em>
+</p>
+<p align="center">
+  <img src="docs/themnhanvien.png" alt="" width="800"/>
+  <br/>
+  <em>Thêm nhân viên</em>
+</p>
+<p align="center">
+  <img src="docs/chamcong.png" alt="" width="800"/>
+  <br/>
+  <em>Chấm công</em>
+</p>
+<p align="center">
+  <img src="docs/tinhluong.png" alt="" width="800"/>
+  <br/>
+  <em>Tính lương</em>
 </p>
 
-### Dashboard Khách hàng
+### Module khách hàng và văn bản
 <p align="center">
-  <img src="docs/khach_hang.png" alt="Dashboard Khách hàng" width="800"/>
+  <img src="docs/dashkhachhang.png" alt="" width="800"/>
   <br/>
   <em>Dashboard Khách hàng</em>
 </p>
-
-### Dashboard Quản lý Văn bản
 <p align="center">
-  <img src="docs/van_ban.png" alt="Dashboard Văn bản" width="800"/>
+  <img src="docs/themkhachhang.png" alt="" width="800"/>
+  <br/>
+  <em>Thêm khách hàng</em>
+</p>
+<p align="center">
+  <img src="docs/dashvanban.png" alt="" width="800"/>
   <br/>
   <em>Dashboard Quản lý Văn bản</em>
 </p>
-
-### Giao diện AI phân loại
 <p align="center">
-  <img src="docs/ai_classify.png" alt="AI Classification" width="800"/>
+  <img src="docs/themhopdong1.png" alt="" width="800"/>
   <br/>
-  <em>Hệ thống AI phân loại văn bản tự động</em>
+  <em>Thêm văn bản</em>
+</p>
+<p align="center">
+  <img src="docs/AI.png" alt="" width="800"/>
+  <br/>
+  <em>Tích hợp AI phân loại văn bản</em>
 </p>
 
 ---
@@ -199,7 +220,7 @@ sudo -u postgres createdb -O odoo odoo
 
 ```bash
 # Clone project
-git clone <repository-url>
+git clone https://github.com/vitconxinhxinh/TTDN-16-04-N7
 cd odoo-fitdnu
 
 # Tạo virtual environment (khuyến nghị)
@@ -320,74 +341,59 @@ python odoo-bin -c odoo.conf
 
 ---
 
-### 📊 Tải dữ liệu Demo
+# 🤖 Training AI Model (Phân loại Hợp đồng)
 
-#### Phương pháp 1: Script Python (Khuyến nghị)
+Module sử dụng Machine Learning để phân loại các loại hợp đồng tiếng Việt.
+
+## Chuẩn bị dữ liệu
+
 ```bash
-cd addons
-
-# Load tất cả dữ liệu demo
-python load_demo_data.py
-
-# Hoặc load từng module
-cd hr_management
-python create_demo_data.py
-
-cd ../crm_management
-python create_demo_data.py
-
-cd ../customer_document_management
-python create_demo_data.py
+# Tiền xử lý dữ liệu
+python preprocess.py
 ```
 
-#### Phương pháp 2: Import SQL trực tiếp
-```bash
-# Import tất cả
-psql -U odoo -d odoo -f addons/insert_demo_data.sql
-
-# Import từng module
-psql -U odoo -d odoo -f addons/hr_management/insert_demo_data.sql
-```
-
----
-
-### 🤖 Training AI Model (Phân loại Văn bản)
-
-Module Văn bản sử dụng Machine Learning để phân loại tài liệu. Training model:
+## Training Model
 
 ```bash
-# Đảm bảo đã có dữ liệu văn bản trong database
-
 # Chạy script training
-python train_classifier_model.py
-
-# Hoặc training tự động (khi đủ dữ liệu)
-python auto_train.py
+python train.py
 
 # Test model
-python test_classifier.py
+python predict.py
 ```
 
-**Lưu ý:**
-- Model cần ít nhất 100+ tài liệu để training hiệu quả
-- Model tự động retrain hàng tháng qua Cron Job
-- File model được lưu tại: `addons/customer_document_management/ml_models/`
-- Hỗ trợ phân loại: Nhân sự, Khách hàng, Văn bản
+## Các loại hợp đồng được hỗ trợ
 
----
+- **labor_contract** - Hợp đồng lao động
+- **service_contract** - Hợp đồng dịch vụ
+- **sales_contract** - Hợp đồng bán hàng
+- **lease_contract** - Hợp đồng thuê
+- **nda_contract** - Hợp đồng bảo mật
 
-### 🔧 Xử lý sự cố
+## Cấu trúc thư mục
 
-Gặp vấn đề khi cài đặt hoặc sử dụng? Xem hướng dẫn chi tiết tại: **[TROUBLESHOOTING.md](TROUBLESHOOTING.md)**
+```
+d:\AI\
+├── data/
+│   ├── raw/              # File hợp đồng gốc (.txt)
+│   ├── dataset.csv       # Dataset sau xử lý
+│   └── labels.csv        # File nhãn
+├── train.py              # Script training
+├── preprocess.py         # Tiền xử lý dữ liệu
+├── predict.py            # Dự đoán loại hợp đồng
+├── model.pkl             # Model đã train
+└── vectorizer.pkl        # TF-IDF vectorizer
+```
 
-**Các lỗi thường gặp:**
-- Lỗi kết nối Database
-- Port đã được sử dụng
-- Module không import được
-- AI Model không hoạt động
-- Python Dependencies thiếu
-- Docker issues
-- Performance/Slow queries
+## Yêu cầu
+
+- Python 3.7+
+- pandas, scikit-learn, joblib, numpy
+
+## Lưu ý
+
+- Sử dụng TfidfVectorizer (max 5000 features, ngram 1-2)
+- LogisticRegression với `class_weight="balanced"`
 
 ---
 
@@ -415,40 +421,98 @@ Sau khi cài đặt thành công:
 ```
 odoo-fitdnu/
 ├── addons/                              # Custom modules
-│   ├── hr_management/                  # Module Nhân sự
-│   │   ├── models/                     # Business logic
-│   │   ├── views/                      # UI templates
-│   │   ├── wizard/                     # Wizards
-│   │   ├── security/                   # Access rights
-│   │   └── data/                       # Master & demo data
-│   ├── crm_management/                 # Module Khách hàng
-│   │   ├── models/
-│   │   ├── views/
-│   │   └── data/
+│   ├── nhan_su/                         # Module Nhân sự
+│   │   ├── models/                      # Business logic
+│   │   │   ├── __init__.py
+│   │   │   ├── employee.py              # Model nhân viên
+│   │   │   ├── department.py            # Model phòng ban
+│   │   │   ├── contract.py              # Model hợp đồng
+│   │   │   ├── attendance.py            # Model chấm công
+│   │   │   └── payroll.py               # Model tính lương
+│   │   ├── views/                       # UI templates
+│   │   │   ├── employee_views.xml
+│   │   │   ├── department_views.xml
+│   │   │   ├── contract_views.xml
+│   │   │   ├── attendance_views.xml
+│   │   │   ├── payroll_views.xml
+│   │   │   └── menu.xml
+│   │   ├── wizard/                      # Wizards
+│   │   │   ├── import_employees.py
+│   │   │   └── generate_payroll.py
+│   │   ├── security/                    # Access rights
+│   │   │   └── ir.model.access.csv
+│   │   ├── data/                        # Master & demo data
+│   │   │   ├── department_data.xml
+│   │   │   ├── employee_data.xml
+│   │   │   └── demo_data.xml
+│   │   ├── reports/                     # Custom reports
+│   │   │   ├── payroll_report.py
+│   │   │   └── attendance_report.xml
+│   │   ├── __init__.py
+│   │   └── __manifest__.py              # Module manifest
+│   │
 │   └── customer_document_management/   # Module Văn bản
-│       ├── models/
-│       ├── views/
-│       ├── controllers/
-│       ├── ml_models/                  # AI models
-│       ├── data/
-│       └── tests/
+│       ├── models/                      # Business logic
+│       │   ├── __init__.py
+│       │   ├── document.py              # Model tài liệu
+│       │   ├── document_type.py         # Model loại tài liệu
+│       │   ├── document_category.py     # Model danh mục
+│       │   └── document_approval.py     # Model phê duyệt
+│       ├── views/                       # UI templates
+│       │   ├── document_views.xml
+│       │   ├── document_type_views.xml
+│       │   ├── document_category_views.xml
+│       │   ├── dashboard_views.xml
+│       │   └── menu.xml
+│       ├── controllers/                 # Controllers
+│       │   ├── __init__.py
+│       │   ├── predict.py               # AI prediction controller
+│       │   └── document_controller.py
+│       ├── ml_models/                   # AI models
+│       │   ├── model.pkl                # Trained model
+│       │   ├── vectorizer.pkl           # TF-IDF vectorizer
+│       │   ├── train_classifier.py      # Training script
+│       │   └── preprocessing.py         # Data preprocessing
+│       ├── data/                        # Master & demo data
+│       │   ├── document_type_data.xml
+│       │   ├── document_category_data.xml
+│       │   └── demo_documents.xml
+│       ├── tests/                       # Unit tests
+│       │   ├── __init__.py
+│       │   ├── test_document.py
+│       │   └── test_classifier.py
+│       ├── static/                      # Static files
+│       │   ├── css/
+│       │   └── js/
+│       ├── __init__.py
+│       └── __manifest__.py              # Module manifest
+│
 ├── odoo/                                # Odoo core
 ├── docs/                                # Documentation & images
+│   ├── README.md
+│   ├── INSTALL.md
+│   ├── nhan_su.png
+│   ├── van_ban.png
+│   ├── ai_classify.png
+│   └── api_docs.md
 ├── odoo-bin                             # Odoo executable
 ├── odoo.conf                            # Configuration
 ├── docker-compose.yml                   # Docker setup
-└── requirements.txt                     # Python dependencies
+├── Dockerfile                           # Docker image definition
+├── requirements.txt                     # Python dependencies
+├── .gitignore
+└── README.md                            
 ```
-
 ---
 
 ## 📌 6. Liên hệ & Hỗ trợ
 
 Nếu có bất kỳ thắc mắc hoặc cần hỗ trợ, vui lòng liên hệ:
 
-- Họ và tên: [Tên của bạn]
-- Lớp: [Lớp của bạn]
+- Họ và tên: Tạ Việt Anh
+- Lớp: CNTT16-04
 - Khoa: Công nghệ thông tin - Trường Đại học Đại Nam
-- Email: [Email của bạn]
+- Email: tavietanh1012004@gmail.com
 
 © 2025 AIoTLab, Faculty of Information Technology, DaiNam University. All rights reserved.
+
