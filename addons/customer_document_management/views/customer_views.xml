@@ -25,9 +25,6 @@
         <field name="arch" type="xml">
             <form string="Khách hàng">
                 <sheet>
-                    <div class="oe_button_box" name="button_box">
-                        <button name="%(action_customer_document_suggestion_wizard)d" type="action" class="oe_stat_button" icon="fa-lightbulb-o" string="Gợi ý văn bản AI"/>
-                    </div>
                     <notebook>
                         <page string="Thông tin khách hàng">
                             <group>
