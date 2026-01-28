@@ -10,22 +10,22 @@ import numpy as np
 
 class CustomerDocumentAPI(http.Controller):
 
-        @http.route('/api/classify_text', type='json', auth='user', methods=['POST'])
-        def classify_text(self, text=None, **kwargs):
-            """API nhận văn bản và trả về nhãn phân loại từ model AI mới."""
-            if not text:
-                return {'error': 'Missing text'}
-            script_path = os.path.join(os.path.dirname(__file__), 'predict.py')
-            try:
-                result = subprocess.run([
-                    'python3', script_path, text
-                ], capture_output=True, text=True, check=True)
-                label = result.stdout.strip()
-                return {'label': label}
-            except Exception as e:
-                return {'error': str(e)}
-    # ...existing code...
+    @http.route('/api/classify_text', type='json', auth='user', methods=['POST'])
+    def classify_text(self, text=None, **kwargs):
+        """API nhận văn bản và trả về nhãn phân loại từ model AI mới."""
+        if not text:
+            return {'error': 'Missing text'}
+        script_path = os.path.join(os.path.dirname(__file__), 'predict.py')
+        try:
+            result = subprocess.run([
+                'python3', script_path, text
+            ], capture_output=True, text=True, check=True)
+            label = result.stdout.strip()
+            return {'label': label}
+        except Exception as e:
+            return {'error': str(e)}
 
+    # ...existing code...
 
     @http.route('/api/document_file/view/<int:file_id>', type='http', auth='user', methods=['GET'])
     def view_document_file(self, file_id, **kwargs):
