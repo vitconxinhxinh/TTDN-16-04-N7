@@ -25,25 +25,14 @@ class DocumentFile(models.Model):
     def action_suggest_label(self):
         """Gọi AI để gợi ý nhãn và hiển thị wizard để xác nhận."""
         self.ensure_one()
-        label = self._suggest_label_from_ai(self.name or '')
-        if not label:
-            return {
-                'type': 'ir.actions.client',
-                'tag': 'display_notification',
-                'params': {
-                    'title': 'AI gợi ý',
-                    'message': 'Không gợi ý được nhãn!',
-                    'sticky': False,
-                    'type': 'warning',
-                }
-            }
         
-        # Tạo wizard với kết quả gợi ý
+        # Tạo wizard
         wizard = self.env['ai.suggestion.wizard'].create({
             'file_id': self.id,
-            'suggested_type': label,
-            'confidence': 0.85,  # Có thể lấy từ AI model nếu cần
         })
+        
+        # Gọi action_suggest trên wizard để lấy kết quả AI
+        wizard.action_suggest()
         
         return {
             'type': 'ir.actions.act_window',
@@ -59,6 +48,7 @@ class DocumentFile(models.Model):
         """Gọi script predict.py để phân loại văn bản."""
         import subprocess
         import os
+        import json
         script_path = os.path.join(os.path.dirname(__file__), '..', 'controllers', 'predict.py')
         valid_labels = ['labor_contract', 'sales_contract', 'service_contract', 
                         'lease_contract', 'nda_contract', 'quotation', 'legal', 'other']
@@ -66,7 +56,18 @@ class DocumentFile(models.Model):
             result = subprocess.run([
                 'python3', script_path, text
             ], capture_output=True, text=True, check=True, timeout=5)
-            label = result.stdout.strip()
+            output = result.stdout.strip()
+            
+            # Parse JSON response
+            try:
+                data = json.loads(output)
+                label = data.get('label', 'other')
+                confidence = data.get('confidence', 0)
+            except json.JSONDecodeError:
+                # Fallback nếu không phải JSON
+                label = output if output in valid_labels else 'other'
+                confidence = 0
+            
             # Map nhãn trả về sang selection
             if label in valid_labels:
                 return label

@@ -6,8 +6,8 @@
             <form string="Gợi ý từ AI">
                 <group>
                     <field name="file_id" invisible="1"/>
-                    <field name="suggested_type"/>
-                    <field name="confidence" widget="percentage"/>
+                    <field name="suggested_type" readonly="1"/>
+                    <field name="confidence" widget="percentage" readonly="1"/>
                 </group>
                 <footer>
                     <button name="action_confirm" type="object" string="Xác nhận" class="btn-primary"/>

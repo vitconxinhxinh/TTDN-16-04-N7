@@ -2,20 +2,12 @@ import joblib
 import numpy as np
 import sys
 import os
+import json
 
 # Lấy đường dẫn của thư mục chứa script này
 SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
 MODEL_FILE = os.path.join(SCRIPT_DIR, "model.pkl")
 VECTORIZER_FILE = os.path.join(SCRIPT_DIR, "vectorizer.pkl")
-
-# Map từ nhãn model sang nhãn Odoo
-LABEL_MAP = {
-    'labor_contract': 'labor_contract',
-    'lease_contract': 'lease_contract',
-    'sales_contract': 'sales_contract',
-    'service_contract': 'service_contract',
-    'nda_contract': 'nda_contract',
-}
 
 
 def softmax(x):
@@ -35,6 +27,13 @@ def main():
 
     try:
         # Load model và vectorizer
+        if not os.path.exists(MODEL_FILE):
+            print("other")
+            return
+        if not os.path.exists(VECTORIZER_FILE):
+            print("other")
+            return
+            
         model = joblib.load(MODEL_FILE)
         vectorizer = joblib.load(VECTORIZER_FILE)
         
@@ -45,16 +44,25 @@ def main():
         decision_scores = model.decision_function(text_vectorized)[0]
         probs = softmax(decision_scores)
         best_idx = np.argmax(probs)
-        predicted_label = model.classes_[best_idx]
         
-        # Map sang nhãn Odoo
-        odoo_label = LABEL_MAP.get(predicted_label, 'other')
-        print(odoo_label)
+        predicted_label = model.classes_[best_idx]
+        confidence = float(probs[best_idx] * 100)
+        
+        # In kết quả dưới dạng JSON để Odoo có thể parse
+        result = {
+            'label': predicted_label,
+            'confidence': confidence
+        }
+        print(json.dumps(result, ensure_ascii=False))
+        
     except Exception as e:
-        # In ra lỗi để debug nếu cần (có thể comment lại sau)
-        # print(f"Error: {e}", file=sys.stderr)
+        # In lỗi để debug
+        import traceback
+        error_msg = traceback.format_exc()
+        # Fallback: in nhãn other nếu có lỗi
         print("other")
 
 
 if __name__ == "__main__":
     main()
+
