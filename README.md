@@ -471,16 +471,10 @@ odoo-fitdnu/
 │       ├── ml_models/                   # AI models
 │       │   ├── model.pkl                # Trained model
 │       │   ├── vectorizer.pkl           # TF-IDF vectorizer
-│       │   ├── train_classifier.py      # Training script
-│       │   └── preprocessing.py         # Data preprocessing
 │       ├── data/                        # Master & demo data
 │       │   ├── document_type_data.xml
 │       │   ├── document_category_data.xml
 │       │   └── demo_documents.xml
-│       ├── tests/                       # Unit tests
-│       │   ├── __init__.py
-│       │   ├── test_document.py
-│       │   └── test_classifier.py
 │       ├── static/                      # Static files
 │       │   ├── css/
 │       │   └── js/
@@ -490,11 +484,6 @@ odoo-fitdnu/
 ├── odoo/                                # Odoo core
 ├── docs/                                # Documentation & images
 │   ├── README.md
-│   ├── INSTALL.md
-│   ├── nhan_su.png
-│   ├── van_ban.png
-│   ├── ai_classify.png
-│   └── api_docs.md
 ├── odoo-bin                             # Odoo executable
 ├── odoo.conf                            # Configuration
 ├── docker-compose.yml                   # Docker setup
@@ -515,4 +504,5 @@ Nếu có bất kỳ thắc mắc hoặc cần hỗ trợ, vui lòng liên hệ:
 - Email: tavietanh1012004@gmail.com
 
 © 2025 AIoTLab, Faculty of Information Technology, DaiNam University. All rights reserved.
+
 
