@@ -31,8 +31,3 @@ class Document(models.Model):
         if not vals.get('code'):
             vals['code'] = self.env['ir.sequence'].next_by_code('customer.document.document')
         return super().create(vals)
-
-
-        except Exception:
-            pass
-        return None
