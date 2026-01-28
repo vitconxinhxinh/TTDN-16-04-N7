@@ -25,7 +25,6 @@ class AISuggestionWizard(models.TransientModel):
     def action_suggest_with_text(self, text):
         """Gọi AI để gợi ý loại văn bản (dùng nội dung file)."""
         self.ensure_one()
-        self.file_text = text[:500]  # Lưu 500 ký tự đầu để debug
         self._call_ai_and_update(text)
 
     def _call_ai_and_update(self, text):
