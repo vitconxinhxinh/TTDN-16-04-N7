@@ -65,6 +65,9 @@
                         <field name="description" colspan="2"/>
                     </group>
                 </sheet>
+                <footer>
+                    <button name="action_suggest_label" type="object" string="Gợi ý nhãn AI" class="btn-info"/>
+                </footer>
             </form>
         </field>
     </record>
