@@ -37,18 +37,55 @@ class DocumentFile(models.Model):
         label = self._suggest_label_from_ai(self.name or '')
         if label:
             self.suggested_document_type = label
+            return {
+                'type': 'ir.actions.client',
+                'tag': 'display_notification',
+                'params': {
+                    'title': 'AI gợi ý',
+                    'message': f'Loại văn bản gợi ý: {dict(self._fields["suggested_document_type"].selection).get(label, "Không xác định")}. Vui lòng xác nhận để lưu.',
+                    'sticky': False,
+                    'type': 'success',
+                }
+            }
         else:
             self.suggested_document_type = False
-        return {
-            'type': 'ir.actions.client',
-            'tag': 'display_notification',
-            'params': {
-                'title': 'AI gợi ý',
-                'message': f'Nhãn gợi ý: {dict(self._fields["suggested_document_type"].selection).get(label, "Không xác định")}' if label else 'Không gợi ý được nhãn!',
-                'sticky': False,
-                'type': 'success' if label else 'warning',
+            return {
+                'type': 'ir.actions.client',
+                'tag': 'display_notification',
+                'params': {
+                    'title': 'AI gợi ý',
+                    'message': 'Không gợi ý được nhãn!',
+                    'sticky': False,
+                    'type': 'warning',
+                }
             }
-        }
+
+    def action_confirm_suggestion(self):
+        """Xác nhận và lưu nhãn gợi ý vào trường document_type."""
+        self.ensure_one()
+        if self.suggested_document_type:
+            self.document_type = self.suggested_document_type
+            return {
+                'type': 'ir.actions.client',
+                'tag': 'display_notification',
+                'params': {
+                    'title': 'Thành công',
+                    'message': f'Đã lưu loại văn bản: {dict(self._fields["document_type"].selection).get(self.document_type, "")}',
+                    'sticky': False,
+                    'type': 'success',
+                }
+            }
+        else:
+            return {
+                'type': 'ir.actions.client',
+                'tag': 'display_notification',
+                'params': {
+                    'title': 'Lỗi',
+                    'message': 'Chưa có gợi ý từ AI. Vui lòng click "AI gợi ý loại văn bản" trước.',
+                    'sticky': False,
+                    'type': 'warning',
+                }
+            }
 
     @classmethod
     def _suggest_label_from_ai(cls, text):
@@ -69,16 +106,8 @@ class DocumentFile(models.Model):
         return None
     @api.model
     def create(self, vals):
-        # Gợi ý nhãn khi upload file dựa trên tên file
+        # Không tự động gợi ý khi tạo, để người dùng chủ động click button
         rec = super().create(vals)
-        # Gọi AI sau khi tạo record để đảm bảo có name
-        if rec.name and not rec.suggested_document_type:
-            label = self._suggest_label_from_ai(rec.name)
-            if label:
-                rec.suggested_document_type = label
-                # Tự động set document_type từ AI nếu chưa có
-                if not rec.document_type:
-                    rec.document_type = label
         return rec
 
     def action_view_file(self):
