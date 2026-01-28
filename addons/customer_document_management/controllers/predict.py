@@ -46,12 +46,15 @@ def main():
         best_idx = np.argmax(probs)
         
         predicted_label = model.classes_[best_idx]
-        confidence = float(probs[best_idx] * 100)
+        confidence = float(probs[best_idx])
+        
+        # Giới hạn confidence trong khoảng 0-1 và convert sang phần trăm
+        confidence = max(0.0, min(1.0, confidence)) * 100
         
         # In kết quả dưới dạng JSON để Odoo có thể parse
         result = {
             'label': predicted_label,
-            'confidence': confidence
+            'confidence': round(confidence, 2)
         }
         print(json.dumps(result, ensure_ascii=False))
         

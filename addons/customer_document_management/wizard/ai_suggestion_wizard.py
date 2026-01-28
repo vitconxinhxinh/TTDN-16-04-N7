@@ -16,20 +16,29 @@ class AISuggestionWizard(models.TransientModel):
         ('other', 'Khác')
     ], string='Loại văn bản gợi ý')
     confidence = fields.Float(string='Độ tin cậy (%)')
+    file_text = fields.Text(string='Nội dung file', readonly=True)
 
     def action_suggest(self):
-        """Gọi AI để gợi ý loại văn bản và trả về kết quả."""
+        """Gọi AI để gợi ý loại văn bản (dùng tên file)."""
         self.ensure_one()
-        
+        text = self.file_id.name or ''
+        self._call_ai_and_update(text)
+
+    def action_suggest_with_text(self, text):
+        """Gọi AI để gợi ý loại văn bản (dùng nội dung file)."""
+        self.ensure_one()
+        self.file_text = text[:500]  # Lưu 500 ký tự đầu để debug
+        self._call_ai_and_update(text)
+
+    def _call_ai_and_update(self, text):
+        """Gọi predict.py và cập nhật kết quả."""
         import subprocess
         import json
         import os
         
-        # Gọi predict.py
         script_path = os.path.join(
             os.path.dirname(__file__), '..', 'controllers', 'predict.py'
         )
-        text = self.file_id.name or ''
         
         try:
             result = subprocess.run([
@@ -41,7 +50,7 @@ class AISuggestionWizard(models.TransientModel):
             # Debug: log output
             import sys
             print(f"[DEBUG] predict.py output: {output}", file=sys.stderr)
-            print(f"[DEBUG] text input: {text}", file=sys.stderr)
+            print(f"[DEBUG] text length: {len(text)}", file=sys.stderr)
             
             # Parse JSON response
             try:

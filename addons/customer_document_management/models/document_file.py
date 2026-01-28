@@ -22,17 +22,93 @@ class DocumentFile(models.Model):
     ], string='Loại văn bản', copy=False)
     document_type_manual = fields.Char(string='Loại văn bản (Tùy chỉnh)', copy=False)
 
+    def _extract_text_from_file(self):
+        """Trích xuất text từ file (PDF, DOCX, TXT, v.v.)"""
+        import base64
+        import io
+        
+        if not self.file:
+            return ""
+        
+        try:
+            # Decode file từ binary
+            file_content = base64.b64decode(self.file)
+            filename = (self.name or "").lower()
+            
+            # Xử lý PDF
+            if filename.endswith('.pdf'):
+                try:
+                    import pdfplumber
+                    with pdfplumber.open(io.BytesIO(file_content)) as pdf:
+                        text = ""
+                        for page in pdf.pages[:5]:  # Chỉ lấy 5 trang đầu để nhanh
+                            text += page.extract_text() or ""
+                        return text[:2000]  # Giới hạn 2000 ký tự
+                except:
+                    pass
+            
+            # Xử lý DOCX
+            elif filename.endswith('.docx'):
+                try:
+                    from docx import Document
+                    doc = Document(io.BytesIO(file_content))
+                    text = "\n".join([para.text for para in doc.paragraphs[:100]])
+                    return text[:2000]
+                except:
+                    pass
+            
+            # Xử lý TXT, CSV
+            elif filename.endswith(('.txt', '.csv')):
+                try:
+                    text = file_content.decode('utf-8')
+                    return text[:2000]
+                except:
+                    try:
+                        text = file_content.decode('utf-16')
+                        return text[:2000]
+                    except:
+                        pass
+            
+            # Fallback: thử decode UTF-8
+            try:
+                text = file_content.decode('utf-8')
+                return text[:2000]
+            except:
+                return ""
+                
+        except Exception as e:
+            return ""
+    
     def action_suggest_label(self):
-        """Gọi AI để gợi ý nhãn và hiển thị wizard để xác nhận."""
+        """Gọi AI để gợi ý nhãn dựa trên nội dung file thực tế."""
         self.ensure_one()
+        
+        # Trích xuất text từ file
+        file_text = self._extract_text_from_file()
+        
+        # Fallback: nếu không lấy được nội dung, dùng tên file
+        if not file_text:
+            file_text = self.name or ""
+        
+        if not file_text:
+            return {
+                'type': 'ir.actions.client',
+                'tag': 'display_notification',
+                'params': {
+                    'title': 'Lỗi',
+                    'message': 'Không thể đọc nội dung file!',
+                    'sticky': False,
+                    'type': 'warning',
+                }
+            }
         
         # Tạo wizard
         wizard = self.env['ai.suggestion.wizard'].create({
             'file_id': self.id,
         })
         
-        # Gọi action_suggest trên wizard để lấy kết quả AI
-        wizard.action_suggest()
+        # Gọi action_suggest trên wizard với nội dung file
+        wizard.action_suggest_with_text(file_text)
         
         return {
             'type': 'ir.actions.act_window',
