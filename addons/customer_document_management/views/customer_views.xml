@@ -49,7 +49,6 @@
                             <field name="document_ids">
                                 <tree>
                                     <field name="name"/>
-                                    <field name="document_type"/>
                                     <field name="issue_date"/>
                                 </tree>
                             </field>

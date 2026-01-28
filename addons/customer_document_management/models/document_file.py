@@ -10,17 +10,26 @@ class DocumentFile(models.Model):
     upload_user_id = fields.Many2one('res.users', string='Người upload', default=lambda self: self.env.uid)
     upload_date = fields.Datetime(string='Ngày upload', default=fields.Datetime.now)
     download_url = fields.Char(string='Tải về', compute='_compute_download_url', store=False)
+    document_type = fields.Selection([
+        ('labor_contract', 'Hợp đồng lao động'),
+        ('sales_contract', 'Hợp đồng mua bán'),
+        ('service_contract', 'Hợp đồng dịch vụ'),
+        ('lease_contract', 'Hợp đồng thuê'),
+        ('nda_contract', 'Hợp đồng bảo mật'),
+        ('quotation', 'Báo giá'),
+        ('legal', 'Tài liệu pháp lý'),
+        ('other', 'Khác')
+    ], string='Loại văn bản', copy=False)
     suggested_document_type = fields.Selection([
         ('labor_contract', 'Hợp đồng lao động'),
         ('sales_contract', 'Hợp đồng mua bán'),
         ('service_contract', 'Hợp đồng dịch vụ'),
         ('lease_contract', 'Hợp đồng thuê'),
         ('nda_contract', 'Hợp đồng bảo mật'),
-        ('contract', 'Hợp đồng (chung)'),
         ('quotation', 'Báo giá'),
         ('legal', 'Tài liệu pháp lý'),
         ('other', 'Khác')
-    ], string='Nhãn gợi ý', readonly=True, copy=False)
+    ], string='Nhãn gợi ý AI', readonly=True, copy=False)
 
     def action_suggest_label(self):
         """Gọi AI để gợi ý nhãn cho file này và cập nhật trường suggested_document_type."""
@@ -61,10 +70,14 @@ class DocumentFile(models.Model):
     @api.model
     def create(self, vals):
         # Gợi ý nhãn khi upload file dựa trên tên file
-        if not vals.get('suggested_document_type') and vals.get('name'):
+        if vals.get('name'):
             label = self._suggest_label_from_ai(vals['name'])
             if label:
-                vals['suggested_document_type'] = label
+                if not vals.get('suggested_document_type'):
+                    vals['suggested_document_type'] = label
+                # Tự động set document_type từ AI nếu chưa có
+                if not vals.get('document_type'):
+                    vals['document_type'] = label
         return super().create(vals)
 
     def action_view_file(self):

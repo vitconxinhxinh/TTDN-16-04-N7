@@ -5,6 +5,7 @@
         <field name="arch" type="xml">
             <tree>
                 <field name="name"/>
+                <field name="document_type"/>
                 <field name="suggested_document_type"/>
                 <field name="upload_user_id"/>
                 <field name="upload_date"/>
@@ -22,6 +23,7 @@
                 <sheet>
                     <group>
                         <field name="name"/>
+                        <field name="document_type"/>
                         <field name="file"/>
                         <field name="upload_user_id"/>
                         <field name="upload_date"/>
