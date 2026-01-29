@@ -493,6 +493,14 @@ odoo-fitdnu/
 └── README.md                            
 ```
 ---
+## 📚  Poster
+<p align="center">
+  <img src="docs/Slide1.PNG" alt="" width="800"/>
+  <br/>
+  <em>Poster</em>
+</p>
+
+---
 
 ## 📌 6. Liên hệ & Hỗ trợ
 
@@ -504,5 +512,6 @@ Nếu có bất kỳ thắc mắc hoặc cần hỗ trợ, vui lòng liên hệ:
 - Email: tavietanh1012004@gmail.com
 
 © 2025 AIoTLab, Faculty of Information Technology, DaiNam University. All rights reserved.
+
 
 
